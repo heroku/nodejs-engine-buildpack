@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+layersdir=$1
+
+echo "---> Node.js Buildpack"
+
+echo "---> Downloading and extracting node"
+mkdir -p $layersdir/nodejs/profile.d
+echo -e "launch = true" > $layersdir/nodejs.toml
+
+nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
+wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
+
+# Create path for build and run
+node_path=$layersdir/nodejs/node-v10.16.0-linux-x64/bin:$PATH
+echo "export PATH=$node_path" > $layersdir/nodejs/profile.d/setup.sh
+export PATH=$node_path
+
+echo "---> Installing yarn"
+npm install -g yarn
+
+# Set default start command
+echo "processes = [{ type = 'web', command = 'npm start' }]" > "$layersdir/launch.toml"
