@@ -1,0 +1,15 @@
+# Buildpack ID and metadata
+[buildpack]
+id = "com.examples.buildpacks.nodejs"
+version = "0.0.1"
+name = "Node Buildpack"
+
+# Stacks that the buildpack will work with
+[[stacks]]
+id = "heroku-18"
+
+[[stacks]]
+id = "io.buildpacks.stacks.bionic"
+
+[[stacks]]
+id = "org.cloudfoundry.stacks.cflinuxfs3"
