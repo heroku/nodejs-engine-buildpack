@@ -21,7 +21,6 @@ echo "---> Installing yarn"
 npm install -g yarn
 
 rm -rf node_modules
-echo -e "launch = true" > "$layersdir/node_modules.toml"
 if [[ -f yarn.lock ]]; then
   echo "---> Restoring node modules from ./yarn.lock"
   yarn install
