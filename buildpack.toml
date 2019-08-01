@@ -1,6 +1,6 @@
 # Buildpack ID and metadata
 [buildpack]
-id = "com.examples.buildpacks.nodejs"
+id = "com.heroku.buildpacks.nodejs"
 version = "0.0.1"
 name = "Node Buildpack"
 
