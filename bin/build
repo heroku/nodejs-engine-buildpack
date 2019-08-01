@@ -20,5 +20,18 @@ export PATH=$node_path
 echo "---> Installing yarn"
 npm install -g yarn
 
+rm -rf node_modules
+echo -e "launch = true" > "$layersdir/node_modules.toml"
+if [[ -f yarn.lock ]]; then
+  echo "---> Restoring node modules from ./yarn.lock"
+  yarn install
+elif [[ -f package-lock.json ]]; then
+  echo "---> Restoring node modules from ./package-lock.json"
+  npm install
+else
+  echo "---> Installing node modules"
+  npm install --no-package-lock
+fi
+
 # Set default start command
 echo "processes = [{ type = 'web', command = 'npm start' }]" > "$layersdir/launch.toml"
