@@ -17,13 +17,17 @@ node_path=$layersdir/nodejs/node-v10.16.0-linux-x64/bin:$PATH
 echo "export PATH=$node_path" > $layersdir/nodejs/profile.d/setup.sh
 export PATH=$node_path
 
-echo "---> Installing yarn"
-npm install -g yarn
+[ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
 
 rm -rf node_modules
-if [[ -f yarn.lock ]]; then
+if $use_yarn; then
+  echo "---> Installing yarn"
+  mkdir -p $layersdir/yarn
+  echo -e "cache = true" > "$layersdir/yarn.toml"
+  npm install -g yarn --prefix $layersdir/yarn
+
   echo "---> Restoring node modules from ./yarn.lock"
-  yarn install
+  $layersdir/yarn/bin/yarn install
 elif [[ -f package-lock.json ]]; then
   echo "---> Restoring node modules from ./package-lock.json"
   npm install
