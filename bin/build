@@ -40,4 +40,5 @@ else
 fi
 
 # Set default start command
-echo "processes = [{ type = 'web', command = 'npm start' }]" > "$layersdir/launch.toml"
+$use_yarn && start_cmd='yarn start' || start_cmd='npm run start'
+echo "processes = [{ type = 'web', command = '$start_cmd' }]" > "$layersdir/launch.toml"
