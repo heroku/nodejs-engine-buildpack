@@ -18,15 +18,19 @@ export PATH=$layersdir/nodejs/bin:$PATH
 
 [ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
 
-rm -rf node_modules
 if $use_yarn; then
   echo "---> Installing yarn"
   mkdir -p $layersdir/yarn
-  echo -e "cache = true" > "$layersdir/yarn.toml"
-  npm install -g yarn --prefix $layersdir/yarn
+  echo -e "cache = true\nlaunch = true" > "$layersdir/yarn.toml"
 
+  npm install -g yarn --prefix $layersdir/yarn
+  export PATH=$layersdir/yarn/bin:$PATH
+fi
+
+rm -rf node_modules
+if $use_yarn; then
   echo "---> Restoring node modules from ./yarn.lock"
-  $layersdir/yarn/bin/yarn install
+  yarn install
 elif [[ -f package-lock.json ]]; then
   echo "---> Restoring node modules from ./package-lock.json"
   npm install
