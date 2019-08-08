@@ -2,6 +2,7 @@
 set -eo pipefail
 
 layersdir=$1
+[ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
 
 echo "---> Node.js Buildpack"
 
@@ -11,12 +12,11 @@ echo -e "launch = true" > $layersdir/nodejs.toml
 
 nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
 wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
+mv $layersdir/nodejs/node-v10.16.0-linux-x64/* $layersdir/nodejs
+rm -r $layersdir/nodejs/node-v10.16.0-linux-x64
 
 # Create path for build and run
-mv $layersdir/nodejs/node-v10.16.0-linux-x64/* $layersdir/nodejs
 export PATH=$layersdir/nodejs/bin:$PATH
-
-[ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
 
 if $use_yarn; then
   echo "---> Installing yarn"
