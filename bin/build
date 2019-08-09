@@ -62,6 +62,13 @@ else
   npm install --no-package-lock
 fi
 
+echo "---> Building assets"
+if $use_yarn; then
+  yarn build
+else
+  npm run build
+fi
+
 # Set default start command
 $use_yarn && start_cmd='yarn start' || start_cmd='npm run start'
 echo "processes = [{ type = 'web', command = '$start_cmd' }]" > "$layersdir/launch.toml"
