@@ -23,10 +23,8 @@ export PATH=$layersdir/nodejs/bin:$layersdir/yarn/bin:$PATH
 
 if $use_yarn; then
   yarn_version=1.17.3
-  cached_version=$([[ -f $layersdir/yarn.toml ]] \
-    && cat "$layersdir/yarn.toml" | /tmp/yj -t | /tmp/jq -r .metadata)
 
-  if [[ $yarn_version == $cached_version ]]; then
+  if [[ $yarn_version == $([[ -f $layersdir/yarn.toml ]] && cat $layersdir/yarn.toml | /tmp/yj -t | /tmp/jq -r .metadata) ]]; then
     echo "---> Reusing yarn $yarn_version"
   else
     echo "---> Installing yarn $yarn_version"
