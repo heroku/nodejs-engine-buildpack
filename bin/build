@@ -4,6 +4,10 @@ set -eo pipefail
 layersdir=$1
 [ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
 
+# Download some useful tools
+wget -qO /tmp/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /tmp/jq
+wget -qO /tmp/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux && chmod +x /tmp/yj
+
 echo "---> Node.js Buildpack"
 
 echo "---> Downloading and extracting node"
