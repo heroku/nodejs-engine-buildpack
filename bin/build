@@ -24,6 +24,7 @@ else
   rm -rf $layersdir/nodejs/*
 
   echo "cache = true" > $layersdir/nodejs.toml
+  echo "build = true" >> $layersdir/nodejs.toml
   echo "launch = true" >> $layersdir/nodejs.toml
   echo -e "[metadata]\nversion = \"$node_version\"" >> $layersdir/nodejs.toml
 
