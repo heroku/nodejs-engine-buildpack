@@ -30,6 +30,7 @@ if $use_yarn; then
     echo "---> Installing yarn $yarn_version"
     mkdir -p $layersdir/yarn
     echo "cache = true" > $layersdir/yarn.toml
+    echo "build = true" >> $layersdir/yarn.toml
     echo "launch = true" >> $layersdir/yarn.toml
     echo -e "[metadata]\nversion = \"$yarn_version\"" >> $layersdir/yarn.toml
 
