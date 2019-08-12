@@ -2,26 +2,44 @@
 set -eo pipefail
 
 layersdir=$1
+[ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
+
+# Download some useful tools
+wget -qO /tmp/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /tmp/jq
+wget -qO /tmp/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux && chmod +x /tmp/yj
 
 echo "---> Node.js Buildpack"
 
 echo "---> Downloading and extracting node"
-mkdir -p $layersdir/nodejs/profile.d
+mkdir -p $layersdir/nodejs
 echo -e "launch = true" > $layersdir/nodejs.toml
 
 nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
 wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
+mv $layersdir/nodejs/node-v10.16.0-linux-x64/* $layersdir/nodejs
+rm -r $layersdir/nodejs/node-v10.16.0-linux-x64
 
-# Create path for build and run
-node_path=$layersdir/nodejs/node-v10.16.0-linux-x64/bin:$PATH
-echo "export PATH=$node_path" > $layersdir/nodejs/profile.d/setup.sh
-export PATH=$node_path
+export PATH=$layersdir/nodejs/bin:$layersdir/yarn/bin:$PATH
 
-echo "---> Installing yarn"
-npm install -g yarn
+if $use_yarn; then
+  yarn_version=1.17.3
+
+  if [[ $yarn_version == $([[ -f $layersdir/yarn.toml ]] && cat $layersdir/yarn.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
+    echo "---> Reusing yarn $yarn_version"
+  else
+    echo "---> Installing yarn $yarn_version"
+    mkdir -p $layersdir/yarn
+    echo "cache = true" > $layersdir/yarn.toml
+    echo "build = true" >> $layersdir/yarn.toml
+    echo "launch = true" >> $layersdir/yarn.toml
+    echo -e "[metadata]\nversion = \"$yarn_version\"" >> $layersdir/yarn.toml
+
+    npm install -g yarn@$yarn_version --prefix $layersdir/yarn
+  fi
+fi
 
 rm -rf node_modules
-if [[ -f yarn.lock ]]; then
+if $use_yarn; then
   echo "---> Restoring node modules from ./yarn.lock"
   yarn install
 elif [[ -f package-lock.json ]]; then
@@ -33,4 +51,5 @@ else
 fi
 
 # Set default start command
-echo "processes = [{ type = 'web', command = 'npm start' }]" > "$layersdir/launch.toml"
+$use_yarn && start_cmd='yarn start' || start_cmd='npm run start'
+echo "processes = [{ type = 'web', command = '$start_cmd' }]" > "$layersdir/launch.toml"
