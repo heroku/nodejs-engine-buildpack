@@ -16,12 +16,16 @@ export PATH=$layersdir/nodejs/bin:$layersdir/yarn/bin:$PATH
 rm -rf node_modules
 
 # Install node
-if [[ $node_version = $([[ -f $layersdir/nodejs.toml ]] && cat $layersdir/nodejs.toml | /tmp/yj -t | /tmp/jq -r .metadata) ]]; then
-  echo "---> Reusing node $node_version"
+if [[ $node_version == $([[ -f $layersdir/nodejs.toml ]] && cat $layersdir/nodejs.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
+  echo "---> Reusing Node $node_version"
 else
-  echo "---> Downloading and extracting node"
+  echo "---> Downloading and extracting Node $node_version"
   mkdir -p $layersdir/nodejs
-  echo -e "cache = true\nlaunch = true\nmetadata = \"$node_version\"" > $layersdir/nodejs.toml
+  rm -rf $layersdir/nodejs/*
+
+  echo "cache = true" > $layersdir/nodejs.toml
+  echo "launch = true" >> $layersdir/nodejs.toml
+  echo -e "[metadata]\nversion = \"$node_version\"" >> $layersdir/nodejs.toml
 
   nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
   wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
@@ -29,11 +33,13 @@ else
   rm -r $layersdir/nodejs/node-v10.16.0-linux-x64
 fi
 
+if $use_yarn; then
   if [[ $yarn_version == $([[ -f $layersdir/yarn.toml ]] && cat $layersdir/yarn.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
     echo "---> Reusing yarn $yarn_version"
   else
     echo "---> Installing yarn $yarn_version"
     mkdir -p $layersdir/yarn
+
     echo "cache = true" > $layersdir/yarn.toml
     echo "build = true" >> $layersdir/yarn.toml
     echo "launch = true" >> $layersdir/yarn.toml
