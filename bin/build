@@ -50,6 +50,13 @@ if $use_yarn; then
   fi
 fi
 
+$use_yarn && start_cmd='yarn' || start_cmd='npm run'
+
+if [[ null != $(cat package.json | /tmp/jq -r ".scripts[\"heroku-prebuild\"]") ]]; then
+  echo "---> Running heroku-prebuild script"
+  $start_cmd run heroku-prebuild
+fi
+
 # Install node modules
 if $use_yarn; then
   echo "---> Restoring node modules from ./yarn.lock"
@@ -62,13 +69,11 @@ else
   npm install --no-package-lock
 fi
 
-$use_yarn && start_cmd='yarn' || start_cmd='npm run'
-
 if [[ null != $(cat package.json | /tmp/jq -r ".scripts[\"heroku-postbuild\"]") ]]; then
-  echo "---> Building assets"
+  echo "---> Running heroku-postbuild script"
   $start_cmd run heroku-postbuild
 elif [[ null != $(cat package.json | /tmp/jq -r .scripts.build) ]]; then
-  echo "---> Building assets"
+  echo "---> Running build script"
   $start_cmd build
 fi
 
