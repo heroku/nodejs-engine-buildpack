@@ -62,13 +62,15 @@ else
   npm install --no-package-lock
 fi
 
-echo "---> Building assets"
-if $use_yarn; then
-  yarn build
-else
-  npm run build
+$use_yarn && start_cmd='yarn' || start_cmd='npm run'
+
+if [[ null != $(cat package.json | /tmp/jq -r ".scripts[\"heroku-postbuild\"]") ]]; then
+  echo "---> Building assets"
+  $start_cmd run heroku-postbuild
+elif [[ null != $(cat package.json | /tmp/jq -r .scripts.build) ]]; then
+  echo "---> Building assets"
+  $start_cmd build
 fi
 
 # Set default start command
-$use_yarn && start_cmd='yarn start' || start_cmd='npm run start'
-echo "processes = [{ type = 'web', command = '$start_cmd' }]" > "$layersdir/launch.toml"
+echo "processes = [{ type = 'web', command = '$start_cmd start' }]" > "$layersdir/launch.toml"
