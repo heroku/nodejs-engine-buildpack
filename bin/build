@@ -9,26 +9,38 @@ wget -qO /tmp/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linu
 wget -qO /tmp/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux && chmod +x /tmp/yj
 
 echo "---> Node.js Buildpack"
-
-echo "---> Downloading and extracting node"
-mkdir -p $layersdir/nodejs
-echo -e "launch = true" > $layersdir/nodejs.toml
-
-nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
-wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
-mv $layersdir/nodejs/node-v10.16.0-linux-x64/* $layersdir/nodejs
-rm -r $layersdir/nodejs/node-v10.16.0-linux-x64
+node_version=10.16.0
+yarn_version=1.17.3
 
 export PATH=$layersdir/nodejs/bin:$layersdir/yarn/bin:$PATH
+rm -rf node_modules
+
+# Install node
+if [[ $node_version == $([[ -f $layersdir/nodejs.toml ]] && cat $layersdir/nodejs.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
+  echo "---> Reusing Node $node_version"
+else
+  echo "---> Downloading and extracting Node $node_version"
+  mkdir -p $layersdir/nodejs
+  rm -rf $layersdir/nodejs/*
+
+  echo "cache = true" > $layersdir/nodejs.toml
+  echo "build = true" >> $layersdir/nodejs.toml
+  echo "launch = true" >> $layersdir/nodejs.toml
+  echo -e "[metadata]\nversion = \"$node_version\"" >> $layersdir/nodejs.toml
+
+  nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
+  wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
+  mv $layersdir/nodejs/node-v10.16.0-linux-x64/* $layersdir/nodejs
+  rm -r $layersdir/nodejs/node-v10.16.0-linux-x64
+fi
 
 if $use_yarn; then
-  yarn_version=1.17.3
-
   if [[ $yarn_version == $([[ -f $layersdir/yarn.toml ]] && cat $layersdir/yarn.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
     echo "---> Reusing yarn $yarn_version"
   else
     echo "---> Installing yarn $yarn_version"
     mkdir -p $layersdir/yarn
+
     echo "cache = true" > $layersdir/yarn.toml
     echo "build = true" >> $layersdir/yarn.toml
     echo "launch = true" >> $layersdir/yarn.toml
@@ -38,7 +50,7 @@ if $use_yarn; then
   fi
 fi
 
-rm -rf node_modules
+# Install node modules
 if $use_yarn; then
   echo "---> Restoring node modules from ./yarn.lock"
   yarn install
