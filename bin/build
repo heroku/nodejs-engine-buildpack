@@ -49,19 +49,3 @@ if $use_yarn; then
     npm install -g yarn@$yarn_version --prefix $layersdir/yarn
   fi
 fi
-
-# Install node modules
-if $use_yarn; then
-  echo "---> Restoring node modules from ./yarn.lock"
-  yarn install
-elif [[ -f package-lock.json ]]; then
-  echo "---> Restoring node modules from ./package-lock.json"
-  npm install
-else
-  echo "---> Installing node modules"
-  npm install --no-package-lock
-fi
-
-# Set default start command
-$use_yarn && start_cmd='yarn start' || start_cmd='npm run start'
-echo "processes = [{ type = 'web', command = '$start_cmd' }]" > "$layersdir/launch.toml"
