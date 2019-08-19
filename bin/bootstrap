@@ -5,6 +5,13 @@ set -eo pipefail
 bp_dir=$1
 layers_dir=$2
 
+install_parse_tools() {
+  wget -qO $layers_dir/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
+    && chmod +x $layers_dir/bin/jq
+  wget -qO $layers_dir/bin/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux \
+    && chmod +x $layers_dir/bin/yj
+}
+
 install_go() {
   local go_dir="${1:?}"
   local go_tgz="$(mktemp /tmp/go.tgz.XXXXXX)"
@@ -23,8 +30,9 @@ build_cmd() {
 
 go_dir="$(mktemp -d)"
 install_go $go_dir
-
 export PATH="$PATH:${go_dir}/go/bin"
+
+install_parse_tools
 
 cd $bp_dir
 

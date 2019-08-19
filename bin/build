@@ -5,7 +5,7 @@ layers_dir=$1
 bp_dir=$(cd $(dirname $0)/..; pwd)
 
 bootstrap_buildpack() {
-  if [[ -f "$layers_dir/bin/rv" ]]; then
+  if [[ -f $layers_dir/bin/rv && -f $layers_dir/bin/jq && -f $layers_dir/bin/yj ]]; then
     echo "---> Reusing bootstrapped scripts"
   else
     echo "---> Bootstrapping buildpack"
@@ -22,7 +22,7 @@ bootstrap_buildpack() {
 }
 
 install_or_reuse_node() {
-  if [[ $node_version == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
+  if [[ $node_version == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | yj -t | jq -r .metadata.version) ]]; then
     echo "---> Reusing Node $node_version"
   else
     echo "---> Downloading and extracting Node $node_version"
@@ -44,7 +44,7 @@ install_or_reuse_node() {
 
 install_or_reuse_yarn() {
   if $use_yarn; then
-    if [[ $yarn_version == $([[ -f $layers_dir/yarn.toml ]] && cat $layers_dir/yarn.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
+    if [[ $yarn_version == $([[ -f $layers_dir/yarn.toml ]] && cat $layers_dir/yarn.toml | yj -t | jq -r .metadata.version) ]]; then
       echo "---> Reusing yarn $yarn_version"
     else
       echo "---> Installing yarn $yarn_version"
@@ -62,9 +62,6 @@ install_or_reuse_yarn() {
 }
 
 [ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
-
-wget -qO /tmp/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /tmp/jq
-wget -qO /tmp/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux && chmod +x /tmp/yj
 
 echo "---> Node.js Buildpack"
 node_version=10.16.0
