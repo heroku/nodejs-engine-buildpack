@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+bp_dir=$1
+layers_dir=$2
+
+install_go() {
+  local go_dir="${1:?}"
+  local go_tgz="$(mktemp /tmp/go.tgz.XXXXXX)"
+
+  curl --retry 3 -sf -o "$go_tgz" -L https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz
+  tar -C "$go_dir" -xzf "$go_tgz"
+}
+
+build_cmd() {
+  local go_file=$1
+  local cmd=$2
+  go get -d ./cmd/${go_file}/...
+  go build -o "$layers_dir/bin/$cmd" ./cmd/${go_file}/...
+  chmod +x "$layers_dir/bin/$cmd"
+}
+
+go_dir="$(mktemp -d)"
+install_go $go_dir
+
+export PATH="$PATH:${go_dir}/go/bin"
+
+cd $bp_dir
+
+build_cmd "resolve-version" "rv"
