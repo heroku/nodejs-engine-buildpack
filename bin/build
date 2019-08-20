@@ -60,13 +60,14 @@ install_or_reuse_node() {
 }
 
 install_or_reuse_yarn() {
-  local yarn_version=1.17.3
+  local yarn_version=$(cat package.json | jq -r .engines.yarn)
 
   if $use_yarn; then
     if [[ $yarn_version == $([[ -f $layers_dir/yarn.toml ]] && cat $layers_dir/yarn.toml | yj -t | jq -r .metadata.version) ]]; then
       echo "---> Reusing yarn $yarn_version"
     else
       echo "---> Installing yarn $yarn_version"
+
       mkdir -p $layers_dir/yarn
       rm -rf $layers_dir/yarn/*
 
@@ -75,7 +76,9 @@ install_or_reuse_yarn() {
       echo "launch = true" >> $layers_dir/yarn.toml
       echo -e "[metadata]\nversion = \"$yarn_version\"" >> $layers_dir/yarn.toml
 
-      npm install -g yarn@$yarn_version --prefix $layers_dir/yarn
+      yarn_url=$(rv "yarn" $yarn_version)
+      wget -qO - $yarn_url | tar xzf - -C $layers_dir/yarn
+      mv $layers_dir/yarn/*/* $layers_dir/yarn
     fi
   fi
 }
