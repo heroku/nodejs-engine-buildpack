@@ -51,7 +51,7 @@ type matchResult struct {
 
 func main() {
 	if len(os.Args) < 3 {
-		printUsage()
+		fmt.Println("rv BINARY VERSION_REQUIREMENT")
 		os.Exit(0)
 	}
 
@@ -103,11 +103,6 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 	}
-}
-
-func printUsage() {
-	fmt.Println("rv BINARY VERSION_REQUIREMENT")
-	fmt.Println("rv list BINARY")
 }
 
 func getPlatform() string {
