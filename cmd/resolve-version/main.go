@@ -55,14 +55,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	if os.Args[1] == "list" {
-		binary := os.Args[2]
-		list(binary)
-	} else {
-		binary := os.Args[1]
-		versionRequirement := os.Args[2]
-		resolve(binary, versionRequirement)
-	}
+	binary := os.Args[1]
+	versionRequirement := os.Args[2]
+	resolve(binary, versionRequirement)
 }
 
 func resolve(binary string, versionRequirement string) {
@@ -78,12 +73,13 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 		result, err := resolveNode(objects, getPlatform(), versionRequirement)
+		releaseUrl := result.release.url
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 		if result.matched {
-			fmt.Printf("%s %s\n", result.release.version.String(), result.release.url)
+			fmt.Printf("%s\n", releaseUrl)
 		} else {
 			fmt.Println("No result")
 			os.Exit(1)
@@ -95,12 +91,13 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 		result, err := resolveYarn(objects, versionRequirement)
+		releaseUrl := result.release.url
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 		if result.matched {
-			fmt.Printf("%s %s\n", result.release.version.String(), result.release.url)
+			fmt.Printf("%s\n", releaseUrl)
 		} else {
 			fmt.Println("No result")
 			os.Exit(1)
@@ -108,35 +105,9 @@ func resolve(binary string, versionRequirement string) {
 	}
 }
 
-func list(binary string) {
-	platform := getPlatform()
-	objects, err := listS3Objects("heroku-nodebin", binary)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	for _, obj := range objects {
-		release, err := parseObject(obj.Key)
-		if err != nil {
-			continue
-		}
-
-		// ignore any releases that are not for the given platform
-		// unless the platform is empty (for yarn)
-		if release.platform != platform && release.platform != "" {
-			continue
-		}
-
-		if release.stage == "release" {
-			fmt.Printf("%s %s\n", release.version.String(), release.url)
-		}
-	}
-}
-
 func printUsage() {
-	fmt.Println("resolve-version BINARY VERSION_REQUIREMENT")
-	fmt.Println("resolve-version list BINARY")
+	fmt.Println("rv BINARY VERSION_REQUIREMENT")
+	fmt.Println("rv list BINARY")
 }
 
 func getPlatform() string {
