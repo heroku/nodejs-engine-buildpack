@@ -1,51 +1,79 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-layersdir=$1
+layers_dir=$1
+bp_dir=$(cd $(dirname $0)/..; pwd)
+
+bootstrap_buildpack() {
+  if [[ -f $layers_dir/bin/rv && -f $layers_dir/bin/jq && -f $layers_dir/bin/yj ]]; then
+    echo "---> Reusing bootstrapped scripts"
+  else
+    echo "---> Bootstrapping buildpack"
+
+    mkdir -p $layers_dir/bin
+    rm -rf $layers_dir/bin/*
+    bash "$bp_dir/bin/bootstrap" $bp_dir $layers_dir
+
+    echo "cache = true" > $layers_dir/bin.toml
+    echo "build = true" >> $layers_dir/bin.toml
+    echo "launch = false" >> $layers_dir/bin.toml
+    echo "---> Successfully bootstrapped"
+  fi
+}
+
+install_or_reuse_node() {
+  local node_version=10.16.3
+
+  if [[ $node_version == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | yj -t | jq -r .metadata.version) ]]; then
+    echo "---> Reusing Node $node_version"
+  else
+    echo "---> Downloading and extracting Node $node_version"
+
+    mkdir -p $layers_dir/nodejs
+    rm -rf $layers_dir/nodejs/*
+
+    echo "cache = true" > $layers_dir/nodejs.toml
+    echo "build = true" >> $layers_dir/nodejs.toml
+    echo "launch = true" >> $layers_dir/nodejs.toml
+    echo -e "[metadata]\nversion = \"$node_version\"" >> $layers_dir/nodejs.toml
+
+    nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
+    wget -q -O - "$nodejs_url" | tar -xJf - -C "$layers_dir/nodejs"
+    mv $layers_dir/nodejs/node-v10.16.0-linux-x64/* $layers_dir/nodejs
+    rm -r $layers_dir/nodejs/node-v10.16.0-linux-x64
+  fi
+}
+
+install_or_reuse_yarn() {
+  local yarn_version=1.17.3
+
+  if $use_yarn; then
+    if [[ $yarn_version == $([[ -f $layers_dir/yarn.toml ]] && cat $layers_dir/yarn.toml | yj -t | jq -r .metadata.version) ]]; then
+      echo "---> Reusing yarn $yarn_version"
+    else
+      echo "---> Installing yarn $yarn_version"
+      mkdir -p $layers_dir/yarn
+      rm -rf $layers_dir/yarn/*
+
+      echo "cache = true" > $layers_dir/yarn.toml
+      echo "build = true" >> $layers_dir/yarn.toml
+      echo "launch = true" >> $layers_dir/yarn.toml
+      echo -e "[metadata]\nversion = \"$yarn_version\"" >> $layers_dir/yarn.toml
+
+      npm install -g yarn@$yarn_version --prefix $layers_dir/yarn
+    fi
+  fi
+}
+
 [ -f ./yarn.lock ] && use_yarn=true || use_yarn=false
 
-# Download some useful tools
-wget -qO /tmp/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /tmp/jq
-wget -qO /tmp/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux && chmod +x /tmp/yj
-
 echo "---> Node.js Buildpack"
-node_version=10.16.0
-yarn_version=1.17.3
 
-export PATH=$layersdir/nodejs/bin:$layersdir/yarn/bin:$PATH
+export PATH=$layers_dir/bin:$PATH
+export PATH=$layers_dir/nodejs/bin:$layers_dir/yarn/bin:$PATH
+
 rm -rf node_modules
 
-# Install node
-if [[ $node_version == $([[ -f $layersdir/nodejs.toml ]] && cat $layersdir/nodejs.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
-  echo "---> Reusing Node $node_version"
-else
-  echo "---> Downloading and extracting Node $node_version"
-  mkdir -p $layersdir/nodejs
-  rm -rf $layersdir/nodejs/*
-
-  echo "cache = true" > $layersdir/nodejs.toml
-  echo "build = true" >> $layersdir/nodejs.toml
-  echo "launch = true" >> $layersdir/nodejs.toml
-  echo -e "[metadata]\nversion = \"$node_version\"" >> $layersdir/nodejs.toml
-
-  nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
-  wget -q -O - "$nodejs_url" | tar -xJf - -C "$layersdir/nodejs"
-  mv $layersdir/nodejs/node-v10.16.0-linux-x64/* $layersdir/nodejs
-  rm -r $layersdir/nodejs/node-v10.16.0-linux-x64
-fi
-
-if $use_yarn; then
-  if [[ $yarn_version == $([[ -f $layersdir/yarn.toml ]] && cat $layersdir/yarn.toml | /tmp/yj -t | /tmp/jq -r .metadata.version) ]]; then
-    echo "---> Reusing yarn $yarn_version"
-  else
-    echo "---> Installing yarn $yarn_version"
-    mkdir -p $layersdir/yarn
-
-    echo "cache = true" > $layersdir/yarn.toml
-    echo "build = true" >> $layersdir/yarn.toml
-    echo "launch = true" >> $layersdir/yarn.toml
-    echo -e "[metadata]\nversion = \"$yarn_version\"" >> $layersdir/yarn.toml
-
-    npm install -g yarn@$yarn_version --prefix $layersdir/yarn
-  fi
-fi
+bootstrap_buildpack
+install_or_reuse_node
+install_or_reuse_yarn
