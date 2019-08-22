@@ -14,10 +14,9 @@ install_go() {
 }
 
 build_cmd() {
-  local go_file=$1
-  local cmd=$2
+  local cmd=$1
   go get -d ./cmd/${go_file}/...
-  go build -o "$layers_dir/bin/$cmd" ./cmd/${go_file}/...
+  go build -o "$layers_dir/bin/$cmd" ./cmd/${cmd}/...
   chmod +x "$layers_dir/bin/$cmd"
 }
 
@@ -27,4 +26,4 @@ export PATH="$PATH:${go_dir}/go/bin"
 
 cd $bp_dir
 
-build_cmd "resolve-version" "rv"
+build_cmd "resolve-version"
