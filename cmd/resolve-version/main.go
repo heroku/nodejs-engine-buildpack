@@ -78,7 +78,7 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 		if result.matched {
-			fmt.Printf("%s\n", result.release.url)
+			fmt.Printf("%s %s\n", result.release.version.String(), result.release.url)
 		} else {
 			fmt.Println("No result")
 			os.Exit(1)
@@ -95,7 +95,7 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 		if result.matched {
-			fmt.Printf("%s\n", result.release.url)
+			fmt.Printf("%s %s\n", result.release.version.String(), result.release.url)
 		} else {
 			fmt.Println("No result")
 			os.Exit(1)
