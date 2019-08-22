@@ -37,9 +37,11 @@ install_or_reuse_node() {
     exit 1
   fi
 
-  local resolved_url=$(resolve-version node $node_version)
+  local resolved_data=$(resolve-version node $node_version)
+  local node_url=$(echo $resolved_data | cut -f2 -d " ")
+  node_version=$(echo $resolved_data | cut -f1 -d " ")
 
-  if [[ $resolved_url == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | yj -t | jq -r .metadata.url) ]]; then
+  if [[ $node_version == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | yj -t | jq -r .metadata.version) ]]; then
     echo "---> Reusing Node v$node_version"
   else
     echo "---> Downloading and extracting Node v$node_version"
@@ -50,9 +52,9 @@ install_or_reuse_node() {
     echo "cache = true" > $layers_dir/nodejs.toml
     echo "build = true" >> $layers_dir/nodejs.toml
     echo "launch = true" >> $layers_dir/nodejs.toml
-    echo -e "[metadata]\nurl = \"$resolved_url\"" >> $layers_dir/nodejs.toml
+    echo -e "[metadata]\nversion = \"$node_version\"" >> $layers_dir/nodejs.toml
 
-    wget -qO - $resolved_url | tar xzf - -C $layers_dir/nodejs
+    wget -qO - $node_url | tar xzf - -C $layers_dir/nodejs
     mv $layers_dir/nodejs/*/* $layers_dir/nodejs
   fi
 }
