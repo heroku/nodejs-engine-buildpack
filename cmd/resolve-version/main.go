@@ -73,13 +73,12 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 		result, err := resolveNode(objects, getPlatform(), versionRequirement)
-		releaseUrl := result.release.url
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 		if result.matched {
-			fmt.Printf("%s\n", releaseUrl)
+			fmt.Printf("%s\n", result.release.url)
 		} else {
 			fmt.Println("No result")
 			os.Exit(1)
@@ -91,13 +90,12 @@ func resolve(binary string, versionRequirement string) {
 			os.Exit(1)
 		}
 		result, err := resolveYarn(objects, versionRequirement)
-		releaseUrl := result.release.url
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 		if result.matched {
-			fmt.Printf("%s\n", releaseUrl)
+			fmt.Printf("%s\n", result.release.url)
 		} else {
 			fmt.Println("No result")
 			os.Exit(1)
