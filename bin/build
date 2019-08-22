@@ -12,21 +12,21 @@ bootstrap_buildpack() {
 }
 
 install_or_reuse_parse_tools() {
-  if [[ ! (-f $layers_dir/bin/jq && -f $layers_dir/bin/yj) ]]; then
-    echo "---> Installing tooling"
+  mkdir -p $layers_dir/bin
 
-    mkdir -p $layers_dir/bin
-    rm -rf $layers_dir/bin/*
-
+  if [[ ! -f $layers_dir/bin/jq ]]; then
     wget -qO $layers_dir/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
       && chmod +x $layers_dir/bin/jq
+  fi
+
+  if [[ ! -f $layers_dir/bin/yj ]]; then
     wget -qO $layers_dir/bin/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux \
       && chmod +x $layers_dir/bin/yj
-
-    echo "cache = true" > $layers_dir/bin.toml
-    echo "build = false" >> $layers_dir/bin.toml
-    echo "launch = false" >> $layers_dir/bin.toml
   fi
+
+  echo "cache = true" > $layers_dir/bin.toml
+  echo "build = false" >> $layers_dir/bin.toml
+  echo "launch = false" >> $layers_dir/bin.toml
 }
 
 install_or_reuse_node() {
