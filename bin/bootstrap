@@ -3,14 +3,6 @@
 set -eo pipefail
 
 bp_dir=$1
-layers_dir=$2
-
-install_parse_tools() {
-  wget -qO $layers_dir/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
-    && chmod +x $layers_dir/bin/jq
-  wget -qO $layers_dir/bin/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux \
-    && chmod +x $layers_dir/bin/yj
-}
 
 install_go() {
   local go_dir="${1:?}"
@@ -21,19 +13,16 @@ install_go() {
 }
 
 build_cmd() {
-  local go_file=$1
-  local cmd=$2
+  local cmd=$1
   go get -d ./cmd/${go_file}/...
-  go build -o "$layers_dir/bin/$cmd" ./cmd/${go_file}/...
-  chmod +x "$layers_dir/bin/$cmd"
+  go build -o $bp_dir/bin/$cmd ./cmd/${cmd}/...
+  chmod +x $bp_dir/bin/$cmd
 }
 
 go_dir="$(mktemp -d)"
 install_go $go_dir
 export PATH="$PATH:${go_dir}/go/bin"
 
-install_parse_tools
-
 cd $bp_dir
 
-build_cmd "resolve-version" "rv"
+build_cmd "resolve-version"
