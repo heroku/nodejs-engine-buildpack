@@ -5,19 +5,27 @@ layers_dir=$1
 bp_dir=$(cd $(dirname $0)/..; pwd)
 
 bootstrap_buildpack() {
-  if [[ -f $layers_dir/bin/rv && -f $layers_dir/bin/jq && -f $layers_dir/bin/yj ]]; then
-    echo "---> Reusing bootstrapped scripts"
-  else
+  if [[ ! -f $bp_dir/bin/resolve-version ]]; then
     echo "---> Bootstrapping buildpack"
+    bash "$bp_dir/bin/bootstrap" $bp_dir $layers_dir
+  fi
+}
+
+install_or_reuse_parse_tools() {
+  if [[ ! (-f $layers_dir/bin/jq && -f $layers_dir/bin/yj) ]]; then
+    echo "---> Installing tooling"
 
     mkdir -p $layers_dir/bin
     rm -rf $layers_dir/bin/*
-    bash "$bp_dir/bin/bootstrap" $bp_dir $layers_dir
+
+    wget -qO $layers_dir/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
+      && chmod +x $layers_dir/bin/jq
+    wget -qO $layers_dir/bin/yj https://github.com/sclevine/yj/releases/download/v2.0/yj-linux \
+      && chmod +x $layers_dir/bin/yj
 
     echo "cache = true" > $layers_dir/bin.toml
-    echo "build = true" >> $layers_dir/bin.toml
+    echo "build = false" >> $layers_dir/bin.toml
     echo "launch = false" >> $layers_dir/bin.toml
-    echo "---> Successfully bootstrapped"
   fi
 }
 
@@ -69,11 +77,12 @@ install_or_reuse_yarn() {
 
 echo "---> Node.js Buildpack"
 
-export PATH=$layers_dir/bin:$PATH
+export PATH=$layers_dir/bin:$bp_dir/bin:$PATH
 export PATH=$layers_dir/nodejs/bin:$layers_dir/yarn/bin:$PATH
 
 rm -rf node_modules
 
 bootstrap_buildpack
+install_or_reuse_parse_tools
 install_or_reuse_node
 install_or_reuse_yarn
