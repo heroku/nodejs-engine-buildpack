@@ -30,12 +30,19 @@ install_or_reuse_parse_tools() {
 }
 
 install_or_reuse_node() {
-  local node_version=10.16.3
+  local node_version=$(cat package.json | jq -r .engines.node)
 
-  if [[ $node_version == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | yj -t | jq -r .metadata.version) ]]; then
-    echo "---> Reusing Node $node_version"
+  if [[ $node_version == null ]]; then
+    echo "Please set a Node version in your package.json"
+    exit 1
+  fi
+
+  local resolved_url=$(resolve-version node $node_version)
+
+  if [[ $resolved_url == $([[ -f $layers_dir/nodejs.toml ]] && cat $layers_dir/nodejs.toml | yj -t | jq -r .metadata.url) ]]; then
+    echo "---> Reusing Node v$node_version"
   else
-    echo "---> Downloading and extracting Node $node_version"
+    echo "---> Downloading and extracting Node v$node_version"
 
     mkdir -p $layers_dir/nodejs
     rm -rf $layers_dir/nodejs/*
@@ -43,12 +50,10 @@ install_or_reuse_node() {
     echo "cache = true" > $layers_dir/nodejs.toml
     echo "build = true" >> $layers_dir/nodejs.toml
     echo "launch = true" >> $layers_dir/nodejs.toml
-    echo -e "[metadata]\nversion = \"$node_version\"" >> $layers_dir/nodejs.toml
+    echo -e "[metadata]\nurl = \"$resolved_url\"" >> $layers_dir/nodejs.toml
 
-    nodejs_url=https://nodejs.org/dist/v10.16.0/node-v10.16.0-linux-x64.tar.xz
-    wget -q -O - "$nodejs_url" | tar -xJf - -C "$layers_dir/nodejs"
-    mv $layers_dir/nodejs/node-v10.16.0-linux-x64/* $layers_dir/nodejs
-    rm -r $layers_dir/nodejs/node-v10.16.0-linux-x64
+    wget -qO - $resolved_url | tar xzf - -C $layers_dir/nodejs
+    mv $layers_dir/nodejs/*/* $layers_dir/nodejs
   fi
 }
 
