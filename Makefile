@@ -26,7 +26,7 @@ clean:
 	-rm -f bin/resolve-version
 
 package: clean build
-	@tar cvzf node-js-cnb-$(VERSION).tgz bin/ profile.d/ buildpack.toml README.md
+	@tar cvzf node-js-cnb-$(VERSION).tgz bin/ buildpack.toml README.md
 
 release:
 	@git tag $(VERSION)
