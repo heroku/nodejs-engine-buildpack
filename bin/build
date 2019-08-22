@@ -7,7 +7,7 @@ bp_dir=$(cd $(dirname $0)/..; pwd)
 bootstrap_buildpack() {
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
     echo "---> Bootstrapping buildpack"
-    bash "$bp_dir/bin/bootstrap" $bp_dir $layers_dir
+    bash "$bp_dir/bin/bootstrap" $bp_dir
   fi
 }
 

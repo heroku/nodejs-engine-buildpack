@@ -3,7 +3,6 @@
 set -eo pipefail
 
 bp_dir=$1
-layers_dir=$2
 
 install_go() {
   local go_dir="${1:?}"
@@ -16,8 +15,8 @@ install_go() {
 build_cmd() {
   local cmd=$1
   go get -d ./cmd/${go_file}/...
-  go build -o "$layers_dir/bin/$cmd" ./cmd/${cmd}/...
-  chmod +x "$layers_dir/bin/$cmd"
+  go build -o $bp_dir/bin/$cmd ./cmd/${cmd}/...
+  chmod +x $bp_dir/bin/$cmd
 }
 
 go_dir="$(mktemp -d)"
