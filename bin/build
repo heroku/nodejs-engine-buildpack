@@ -4,6 +4,9 @@ set -eo pipefail
 layers_dir=$1
 bp_dir=$(cd $(dirname $0)/..; pwd)
 
+lts_node_version="10.16.x"
+stable_yarn_version="1.17.x"
+
 bootstrap_buildpack() {
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
     echo "---> Bootstrapping buildpack"
@@ -32,10 +35,7 @@ install_or_reuse_parse_tools() {
 install_or_reuse_node() {
   local node_version=$(cat package.json | jq -r .engines.node)
 
-  if [[ $node_version == null ]]; then
-    echo "Please set a Node version in your package.json"
-    exit 1
-  fi
+  if [[ $node_version == null ]]; then node_version=$lts_node_version; fi
 
   local resolved_data=$(resolve-version node $node_version)
   local node_url=$(echo $resolved_data | cut -f2 -d " ")
@@ -62,7 +62,7 @@ install_or_reuse_node() {
 install_or_reuse_yarn() {
   local yarn_version=$(cat package.json | jq -r .engines.yarn)
 
-  if [[ $yarn_version == null ]]; then yarn_version="latest"; fi
+  if [[ $yarn_version == null ]]; then yarn_version=$stable_yarn_version; fi
 
   local resolved_data=$(resolve-version yarn $yarn_version)
   local yarn_url=$(echo $resolved_data | cut -f2 -d " ")
