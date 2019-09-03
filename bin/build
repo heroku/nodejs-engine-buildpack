@@ -33,9 +33,7 @@ install_or_reuse_parse_tools() {
 }
 
 install_or_reuse_node() {
-  local node_version=$(cat package.json | jq -r .engines.node)
-
-  if [[ $node_version == null ]]; then node_version=$lts_node_version; fi
+  local node_version=$(cat package.json | jq --exit-status -r ".engines.node // empty" || echo "$lts_node_version")
 
   local resolved_data=$(resolve-version node $node_version)
   local node_url=$(echo $resolved_data | cut -f2 -d " ")
@@ -60,9 +58,7 @@ install_or_reuse_node() {
 }
 
 install_or_reuse_yarn() {
-  local yarn_version=$(cat package.json | jq -r .engines.yarn)
-
-  if [[ $yarn_version == null ]]; then yarn_version=$stable_yarn_version; fi
+  local yarn_version=$(cat package.json | jq --exit-status -r ".engines.yarn // empty" || echo "$stable_yarn_version")
 
   local resolved_data=$(resolve-version yarn $yarn_version)
   local yarn_url=$(echo $resolved_data | cut -f2 -d " ")
