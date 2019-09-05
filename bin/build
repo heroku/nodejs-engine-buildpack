@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-set -eo pipefail
+set -eu
+set -o pipefail
 
 layers_dir=$1
 bp_dir=$(cd $(dirname $0)/..; pwd)
 
-lts_node_version="10.16.x"
-stable_yarn_version="1.17.x"
+source "$bp_dir/bin/utils/json.sh"
 
 bootstrap_buildpack() {
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
@@ -33,7 +33,8 @@ install_or_reuse_parse_tools() {
 }
 
 install_or_reuse_node() {
-  local node_version=$(cat package.json | jq --exit-status -r ".engines.node // empty" || echo "$lts_node_version")
+  local engine_node=$(json_get_key package.json ".engines.node")
+  local node_version=${engine_node:-10.x}
 
   local resolved_data=$(resolve-version node $node_version)
   local node_url=$(echo $resolved_data | cut -f2 -d " ")
@@ -58,7 +59,8 @@ install_or_reuse_node() {
 }
 
 install_or_reuse_yarn() {
-  local yarn_version=$(cat package.json | jq --exit-status -r ".engines.yarn // empty" || echo "$stable_yarn_version")
+  local engine_yarn=$(json_get_key package.json ".engines.yarn")
+  local yarn_version=${engine_yarn:-1.x}
 
   local resolved_data=$(resolve-version yarn $yarn_version)
   local yarn_url=$(echo $resolved_data | cut -f2 -d " ")
