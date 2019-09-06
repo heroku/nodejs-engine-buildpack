@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-bp_dir=$(realpath $(dirname "$BASH_SOURCE")"/../")
+bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
 source "$bp_dir/lib/utils/json.sh"
 
