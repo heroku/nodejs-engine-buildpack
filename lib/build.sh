@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 bp_dir=$(realpath $(dirname "$BASH_SOURCE")"/../")
 
