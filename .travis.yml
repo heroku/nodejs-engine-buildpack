@@ -4,6 +4,10 @@ services:
 - docker
 go:
 - 1.12.x
+before_install:
+- curl -sLo- http://get.bpkg.sh | bash
+before_script:
+- bpkg install rylnd/shpec
 script:
 - make test
 - make package
