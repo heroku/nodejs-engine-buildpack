@@ -16,7 +16,7 @@ test:
 	make unit-test && make binary-test
 
 unit-test:
-	shpec ./shpec/**
+	shpec ./shpec/*/*.sh
 
 binary-test:
 	-docker rm -f node-js-cnb-test
