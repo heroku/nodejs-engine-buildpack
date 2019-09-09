@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
+
 set -eo pipefail
 
-if [[ ! -f package.json ]]; then
-   exit 100
+bp_dir=$(cd $(dirname $0)/..; pwd)
+
+source "$bp_dir/lib/detect.sh"
+
+if ! detect_package_json; then
+  exit 100
 fi

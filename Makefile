@@ -13,6 +13,12 @@ GO111MODULE := on
 VERSION := "v$$(cat buildpack.toml | grep version | sed -e 's/version = //g' | xargs)"
 
 test:
+	make unit-test && make binary-test
+
+unit-test:
+	shpec ./shpec/*_shpec.sh
+
+binary-test:
 	-docker rm -f node-js-cnb-test
 	@docker create --name node-js-cnb-test --workdir /app golang:1.12.9 bash -c "go test ./... -tags=integration"
 	@docker cp . node-js-cnb-test:/app
@@ -31,3 +37,7 @@ package: clean build
 release:
 	@git tag $(VERSION)
 	@git push --tags origin master
+
+shellcheck:
+	@shellcheck -x bin/bootstrap bin/build bin/detect
+	@shellcheck -x bin/utils/**
