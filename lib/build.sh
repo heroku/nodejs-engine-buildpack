@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
 source "$bp_dir/lib/utils/json.sh"
@@ -34,11 +36,15 @@ install_or_reuse_parse_tools() {
 install_or_reuse_node() {
   local layer_dir=$1
 
-  local engine_node=$(json_get_key package.json ".engines.node")
-  local node_version=${engine_node:-10.x}
+  local engine_node
+  local node_version
+  local resolved_data
+  local node_url
 
-  local resolved_data=$(resolve-version node $node_version)
-  local node_url=$(echo $resolved_data | cut -f2 -d " ")
+  engine_node=$(json_get_key package.json ".engines.node")
+  node_version=${engine_node:-10.x}
+  resolved_data=$(resolve-version node $node_version)
+  node_url=$(echo $resolved_data | cut -f2 -d " ")
   node_version=$(echo $resolved_data | cut -f1 -d " ")
 
   if [[ $node_version == $([[ -f ${layer_dir}.toml ]] && cat ${layer_dir}.toml | yj -t | jq -r .metadata.version) ]]; then
@@ -62,11 +68,15 @@ install_or_reuse_node() {
 install_or_reuse_yarn() {
   local layer_dir=$1
 
-  local engine_yarn=$(json_get_key package.json ".engines.yarn")
-  local yarn_version=${engine_yarn:-1.x}
+  local engine_yarn
+  local yarn_version
+  local resolved_data
+  local yarn_url
 
-  local resolved_data=$(resolve-version yarn $yarn_version)
-  local yarn_url=$(echo $resolved_data | cut -f2 -d " ")
+  engine_yarn=$(json_get_key package.json ".engines.yarn")
+  yarn_version=${engine_yarn:-1.x}
+  resolved_data=$(resolve-version yarn $yarn_version)
+  yarn_url=$(echo $resolved_data | cut -f2 -d " ")
   yarn_version=$(echo $resolved_data | cut -f1 -d " ")
 
   if $use_yarn; then
