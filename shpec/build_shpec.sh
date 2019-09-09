@@ -24,4 +24,40 @@ describe "lib/build.sh"
       assert file_present "$layers_dir/bin.toml"
     end
   end
+
+  describe "install_or_reuse_node"
+    layers_dir=$(create_temp_layer_dir)
+    bootstrap_buildpack
+
+    it "creates a node layer when it does not exist"
+      assert file_absent "$layers_dir/nodejs/bin/node"
+      assert file_absent "$layers_dir/nodejs/bin/npm"
+
+      install_or_reuse_node "$layers_dir/nodejs"
+
+      assert file_present "$layers_dir/nodejs/bin/node"
+      assert file_present "$layers_dir/nodejs/bin/npm"
+    end
+
+    it "reuses node layer when versions match"
+      # TODO: set up fixtures for version matching
+    end
+  end
+
+  describe "install_or_reuse_yarn"
+    layers_dir=$(create_temp_layer_dir)
+    bootstrap_buildpack
+
+    it "creates a yarn layer when it does not exist"
+      assert file_absent "$layers_dir/yarn/bin/yarn"
+
+      install_or_reuse_yarn "$layers_dir/yarn"
+
+      assert file_present "$layers_dir/yarn/bin/yarn"
+    end
+
+    it "reuses yarn layer when versions match"
+      # TODO: set up fixtures for version matching
+    end
+  end
 end
