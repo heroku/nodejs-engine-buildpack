@@ -20,7 +20,7 @@ If you're using Windows or Linux, follow instructions [here](https://buildpacks.
 Right now, we are prototyping with a local version of the buildpack. Clone it to your machine.
 
 ```sh
-git clone git@github.com:heroku/node-js-cnb.git
+git clone git@github.com:heroku/nodejs-engine-buildpack.git
 ```
 
 ### Build the image
