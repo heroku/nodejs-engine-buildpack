@@ -5,11 +5,13 @@ source "./lib/detect.sh"
 
 describe "lib/detect.sh"
   describe "detect_package_json"
-    it "exits with 100 if there is no package.json"
-      rm ./package.json
-
-      detect_package_json > /dev/null 2>& 1
-      assert equal "$?" 100
+    it "exits with 1 if there is no package.json"
+      rm -f ./package.json
+      set +e
+      detect_package_json
+      loc_var=$?
+      set -e
+      assert equal $loc_var 1
     end
 
     it "exits with 0 if there is package.json"

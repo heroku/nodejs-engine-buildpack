@@ -4,4 +4,6 @@ set -eo pipefail
 
 source "$bp_dir/lib/detect.sh"
 
-detect_package_json
+if ! detect_package_json; then
+  exit 100
+fi
