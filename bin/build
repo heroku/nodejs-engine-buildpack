@@ -11,12 +11,16 @@ source "$bp_dir/lib/build.sh"
 
 echo "---> Node.js Buildpack"
 
-export PATH=$layers_dir/bin:$bp_dir/bin:$PATH
-export PATH=$layers_dir/nodejs/bin:$layers_dir/yarn/bin:$PATH
-
 rm -rf node_modules
 
 bootstrap_buildpack
+export PATH=$bp_dir/bin:$PATH
+
 install_or_reuse_parse_tools "$layers_dir/bin"
+export PATH=$layers_dir/bin:$PATH
+
 install_or_reuse_node "$layers_dir/nodejs"
+export PATH=$layers_dir/nodejs/bin:$PATH
+
 install_or_reuse_yarn "$layers_dir/yarn"
+export PATH=$layers_dir/yarn/bin:$PATH

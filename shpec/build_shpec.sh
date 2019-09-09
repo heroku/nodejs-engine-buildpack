@@ -28,6 +28,7 @@ describe "lib/build.sh"
   describe "install_or_reuse_node"
     layers_dir=$(create_temp_layer_dir)
     bootstrap_buildpack
+    export PATH=$bp_dir/bin:$PATH
 
     it "creates a node layer when it does not exist"
       assert file_absent "$layers_dir/nodejs/bin/node"
@@ -47,6 +48,7 @@ describe "lib/build.sh"
   describe "install_or_reuse_yarn"
     layers_dir=$(create_temp_layer_dir)
     bootstrap_buildpack
+    export PATH=$bp_dir/bin:$PATH
 
     it "creates a yarn layer when it does not exist"
       assert file_absent "$layers_dir/yarn/bin/yarn"

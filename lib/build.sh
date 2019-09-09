@@ -4,9 +4,6 @@ bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
 source "$bp_dir/lib/utils/json.sh"
 
-export PATH=$layers_dir/bin:$bp_dir/bin:$PATH
-export PATH=$layers_dir/nodejs/bin:$layers_dir/yarn/bin:$PATH
-
 bootstrap_buildpack() {
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
     echo "---> Bootstrapping buildpack"
