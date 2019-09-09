@@ -28,8 +28,8 @@ git clone git@github.com:heroku/nodejs-engine-buildpack.git
 Using pack, you're ready to create an image from the buildpack and source code. You will need to add flags that point to the path of the buildpack (`--buildpack`) and the path of the source code (`--path`).
 
 ```sh
-cd node-js-cnb
-pack build TEST_IMAGE_NAME --buildpack ../node-js-cnb --path ../TEST_REPO_PATH
+cd nodejs-engine-buildpack
+pack build TEST_IMAGE_NAME --buildpack ../nodejs-engine-buildpack --path ../TEST_REPO_PATH
 ```
 
 ## Glossary
