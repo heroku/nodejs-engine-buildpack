@@ -11,14 +11,14 @@ before_script:
 script:
 - make test
 - make package
-- ls -alh node-js-cnb-*.tgz
+- ls -alh nodejs-engine-buildpack-*.tgz
 env:
   GO111MODULE: "on"
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
   file:
-    - "node-js-cnb-${TRAVIS_TAG}.tgz"
+    - "nodejs-engine-buildpack-${TRAVIS_TAG}.tgz"
   skip_cleanup: true
   on:
     tags: true
