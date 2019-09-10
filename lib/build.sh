@@ -61,8 +61,7 @@ install_or_reuse_node() {
     echo "launch = true" >> "${layer_dir}.toml"
     echo -e "[metadata]\nversion = \"$node_version\"" >> "${layer_dir}.toml"
 
-    wget -qO - "$node_url" | tar xzf - -C "$layer_dir"
-    mv "$layer_dir"/*/* "$layer_dir"
+    curl -sL "$node_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi
 }
 
@@ -94,7 +93,6 @@ install_or_reuse_yarn() {
     echo "launch = true" >> "${layer_dir}.toml"
     echo -e "[metadata]\nversion = \"$yarn_version\"" >> "${layer_dir}.toml"
 
-    wget -qO - "$yarn_url" | tar xzf - -C "$layer_dir"
-    mv "$layer_dir"/*/* "$layer_dir"
+    curl -sL "$yarn_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi
 }
