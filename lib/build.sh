@@ -81,22 +81,20 @@ install_or_reuse_yarn() {
   yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if $use_yarn; then
-    if [[ $yarn_version == $([[ -f "${layer_dir}.toml" ]] && cat "${layer_dir}.toml" | yj -t | jq -r ".metadata.version") ]]; then
-      echo "---> Reusing yarn@${yarn_version}"
-    else
-      echo "---> Installing yarn@${yarn_version}"
+  if [[ $yarn_version == $([[ -f "${layer_dir}.toml" ]] && cat "${layer_dir}.toml" | yj -t | jq -r ".metadata.version") ]]; then
+    echo "---> Reusing yarn@${yarn_version}"
+  else
+    echo "---> Installing yarn@${yarn_version}"
 
-      mkdir -p "$layer_dir"
-      rm -rf "$layer_dir"/*
+    mkdir -p "$layer_dir"
+    rm -rf "$layer_dir"/*
 
-      echo "cache = true" > "${layer_dir}.toml"
-      echo "build = true" >> "${layer_dir}.toml"
-      echo "launch = true" >> "${layer_dir}.toml"
-      echo -e "[metadata]\nversion = \"$yarn_version\"" >> "${layer_dir}.toml"
+    echo "cache = true" > "${layer_dir}.toml"
+    echo "build = true" >> "${layer_dir}.toml"
+    echo "launch = true" >> "${layer_dir}.toml"
+    echo -e "[metadata]\nversion = \"$yarn_version\"" >> "${layer_dir}.toml"
 
-      wget -qO - "$yarn_url" | tar xzf - -C "$layer_dir"
-      mv "$layer_dir"/*/* "$layer_dir"
-    fi
+    wget -qO - "$yarn_url" | tar xzf - -C "$layer_dir"
+    mv "$layer_dir"/*/* "$layer_dir"
   fi
 }
