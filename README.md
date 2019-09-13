@@ -32,6 +32,35 @@ cd nodejs-engine-buildpack
 pack build TEST_IMAGE_NAME --buildpack ../nodejs-engine-buildpack --path ../TEST_REPO_PATH
 ```
 
+## Testing
+
+To test locally, you'll need to install shpec.
+
+```sh
+curl -sLo- http://get.bpkg.sh | bash
+bpkg install rylnd/shpec
+```
+
+After shpec is installed, you can run the test script.
+
+```sh
+make test
+```
+
+If you want to run individual test suites, that's available too.
+
+**Unit Tests**
+
+```sh
+make unit-test
+```
+
+**Binary Tests**
+
+```sh
+make binary-tests
+```
+
 ## Glossary
 
 - buildpacks: provide framework and a runtime for source code. Read more [here](https://buildpacks.io).
