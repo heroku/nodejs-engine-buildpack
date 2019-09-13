@@ -7,7 +7,6 @@ current_dir=$(pwd)
 
 source "$bp_dir/lib/detect.sh"
 
-# pass in package.json or current dir?
 if ! detect_package_json $current_dir ; then
   exit 100
 fi
