@@ -3,10 +3,10 @@
 set -eo pipefail
 
 bp_dir=$(cd $(dirname $0)/..; pwd)
-current_dir=$(pwd)
+build_dir=$(pwd)
 
 source "$bp_dir/lib/detect.sh"
 
-if ! detect_package_json $current_dir ; then
+if ! detect_package_json $build_dir ; then
   exit 100
 fi
