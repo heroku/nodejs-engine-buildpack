@@ -32,7 +32,7 @@ clean:
 	-rm -f bin/resolve-version
 
 package: clean build
-	@tar cvzf nodejs-engine-buildpack-$(VERSION).tgz bin/ buildpack.toml README.md
+	@tar cvzf nodejs-engine-buildpack-$(VERSION).tgz bin/ lib/** buildpack.toml README.md
 
 release:
 	@git tag $(VERSION)
@@ -40,4 +40,4 @@ release:
 
 shellcheck:
 	@shellcheck -x bin/bootstrap bin/build bin/detect
-	@shellcheck -x bin/utils/**
+	@shellcheck -x lib/**

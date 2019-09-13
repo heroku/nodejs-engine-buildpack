@@ -15,6 +15,15 @@ brew install pack
 
 If you're using Windows or Linux, follow instructions [here](https://buildpacks.io/docs/install-pack/).
 
+### Install shpec
+
+This buildpack uses `shpec` for unit tests, so to run them locally, you'll need to install the package.
+
+```sh
+curl -sLo- http://get.bpkg.sh | bash
+bpkg install rylnd/shpec
+```
+
 ### Clone the buildpack
 
 Right now, we are prototyping with a local version of the buildpack. Clone it to your machine.
@@ -30,6 +39,28 @@ Using pack, you're ready to create an image from the buildpack and source code. 
 ```sh
 cd nodejs-engine-buildpack
 pack build TEST_IMAGE_NAME --buildpack ../nodejs-engine-buildpack --path ../TEST_REPO_PATH
+```
+
+## Testing
+
+Make sure `shpec` is installed. Then, the test script can be run.
+
+```sh
+make test
+```
+
+If you want to run individual test suites, that's available too.
+
+**Unit Tests**
+
+```sh
+make unit-test
+```
+
+**Binary Tests**
+
+```sh
+make binary-tests
 ```
 
 ## Glossary

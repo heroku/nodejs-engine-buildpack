@@ -1,12 +1,9 @@
 # Buildpack ID and metadata
 [buildpack]
-id = "com.heroku.buildpacks.nodejs"
+id = "heroku/nodejs-engine-buildpack"
 version = "0.0.1"
 name = "Node Buildpack"
 
 # Stacks that the buildpack will work with
 [[stacks]]
 id = "heroku-18"
-
-[[stacks]]
-id = "io.buildpacks.stacks.bionic"

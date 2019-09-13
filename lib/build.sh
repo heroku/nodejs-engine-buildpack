@@ -29,19 +29,20 @@ install_or_reuse_parse_tools() {
   fi
 
   echo "cache = true" > "${layer_dir}.toml"
-  echo "build = false" >> "${layer_dir}.toml"
+  echo "build = true" >> "${layer_dir}.toml"
   echo "launch = false" >> "${layer_dir}.toml"
 }
 
 install_or_reuse_node() {
   local layer_dir=$1
+  local build_dir=$2
 
   local engine_node
   local node_version
   local resolved_data
   local node_url
 
-  engine_node=$(json_get_key package.json ".engines.node")
+  engine_node=$(json_get_key "$build_dir/package.json" ".engines.node")
   node_version=${engine_node:-10.x}
   resolved_data=$(resolve-version node $node_version)
   node_url=$(echo $resolved_data | cut -f2 -d " ")
@@ -67,13 +68,14 @@ install_or_reuse_node() {
 
 install_or_reuse_yarn() {
   local layer_dir=$1
+  local build_dir=$2
 
   local engine_yarn
   local yarn_version
   local resolved_data
   local yarn_url
 
-  engine_yarn=$(json_get_key package.json ".engines.yarn")
+  engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
   yarn_version=${engine_yarn:-1.x}
   resolved_data=$(resolve-version yarn $yarn_version)
   yarn_url=$(echo $resolved_data | cut -f2 -d " ")
