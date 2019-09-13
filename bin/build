@@ -4,6 +4,7 @@ set -o pipefail
 
 layers_dir=$1
 bp_dir=$(cd $(dirname $0)/..; pwd)
+current_dir=$(pwd)
 
 source "$bp_dir/lib/build.sh"
 
@@ -19,8 +20,8 @@ export PATH=$bp_dir/bin:$PATH
 install_or_reuse_parse_tools "$layers_dir/bin"
 export PATH=$layers_dir/bin:$PATH
 
-install_or_reuse_node "$layers_dir/nodejs"
+install_or_reuse_node "$layers_dir/nodejs" $current_dir
 export PATH=$layers_dir/nodejs/bin:$PATH
 
-install_or_reuse_yarn "$layers_dir/yarn"
+install_or_reuse_yarn "$layers_dir/yarn" $current_dir
 export PATH=$layers_dir/yarn/bin:$PATH
