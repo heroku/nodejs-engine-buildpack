@@ -1,9 +1,9 @@
-# Buildpack ID and metadata
+api = "0.2"
+
 [buildpack]
 id = "heroku/nodejs-engine-buildpack"
-version = "0.0.1"
 name = "Node Buildpack"
+version = "0.0.1"
 
-# Stacks that the buildpack will work with
 [[stacks]]
 id = "heroku-18"
