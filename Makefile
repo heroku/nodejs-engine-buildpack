@@ -27,6 +27,9 @@ binary-test:
 build:
 	@GOOS=linux go build -o "bin/resolve-version" ./cmd/resolve-version/...
 
+build-local:
+	@GOOS=darwin go build -o "bin/resolve-version" ./cmd/resolve-version/...
+
 clean:
 	-rm -f nodejs-engine-buildpack-$(VERSION).tgz
 	-rm -f bin/resolve-version
