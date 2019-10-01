@@ -18,27 +18,28 @@ create_binaries() {
 }
 
 rm_binaries() {
-  rm $bp_dir/bin/resolve-version
+  rm -f $bp_dir/bin/resolve-version
 }
 
 describe "lib/build.sh"
+  rm_binaries
   create_binaries
 
-  describe "install_or_reuse_parse_tools"
+  describe "install_or_reuse_toolbox"
     layers_dir=$(create_temp_layer_dir)
     project_dir=$(create_temp_project_dir)
 
     it "creates a bin layer"
-      install_or_reuse_parse_tools "$layers_dir/bin" $project_dir
+      install_or_reuse_toolbox "$layers_dir/toolbox" $project_dir
 
-      assert file_present "$layers_dir/bin/jq"
-      assert file_present "$layers_dir/bin/yj"
+      assert file_present "$layers_dir/toolbox/bin/jq"
+      assert file_present "$layers_dir/toolbox/bin/yj"
     end
 
     it "creates a bin.toml"
-      install_or_reuse_parse_tools "$layers_dir/bin" $project_dir
+      install_or_reuse_toolbox "$layers_dir/toolbox" $project_dir
 
-      assert file_present "$layers_dir/bin.toml"
+      assert file_present "$layers_dir/toolbox.toml"
     end
   end
 
