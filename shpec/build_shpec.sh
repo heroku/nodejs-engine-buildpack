@@ -18,10 +18,11 @@ create_binaries() {
 }
 
 rm_binaries() {
-  rm $bp_dir/bin/resolve-version
+  rm -f $bp_dir/bin/resolve-version
 }
 
 describe "lib/build.sh"
+  rm_binaries
   create_binaries
 
   describe "install_or_reuse_toolbox"
