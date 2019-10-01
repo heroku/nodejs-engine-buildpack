@@ -13,19 +13,19 @@ bootstrap_buildpack() {
   fi
 }
 
-install_or_reuse_parse_tools() {
+install_or_reuse_toolbox() {
   local layer_dir=$1
 
-  mkdir -p "${layer_dir}"
+  mkdir -p "${layer_dir}/bin"
 
-  if [[ ! -f "${layer_dir}/jq" ]]; then
-    curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > "${layer_dir}/jq" \
-      && chmod +x "${layer_dir}/jq"
+  if [[ ! -f "${layer_dir}/bin/jq" ]]; then
+    curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > "${layer_dir}/bin/jq" \
+      && chmod +x "${layer_dir}/bin/jq"
   fi
 
-  if [[ ! -f "${layer_dir}/yj" ]]; then
-    curl -Ls https://github.com/sclevine/yj/releases/download/v2.0/yj-linux > "${layer_dir}/yj" \
-      && chmod +x "${layer_dir}/yj"
+  if [[ ! -f "${layer_dir}/bin/yj" ]]; then
+    curl -Ls https://github.com/sclevine/yj/releases/download/v2.0/yj-linux > "${layer_dir}/bin/yj" \
+      && chmod +x "${layer_dir}/bin/yj"
   fi
 
   echo "cache = true" > "${layer_dir}.toml"
