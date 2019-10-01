@@ -41,6 +41,22 @@ cd nodejs-engine-buildpack
 pack build TEST_IMAGE_NAME --buildpack ../nodejs-engine-buildpack --path ../TEST_REPO_PATH
 ```
 
+### Local development
+
+The buildpack uses a Golang binary to parse the engine versions from the `package.json`. It's better to create the binaries once locally, so they don't have to be downloaded and rebuilt with every build.
+
+```
+make build
+```
+
+This builds the binaries specific for the Docker image. The binaries are in the `.gitignore`, so they won't be committed or ever exist in the remote source code.
+
+If you need them for a MacOS, run:
+
+```
+make build-local
+```
+
 ## Testing
 
 Make sure `shpec` is installed. Then, the test script can be run.
