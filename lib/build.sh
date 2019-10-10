@@ -9,7 +9,7 @@ source "$bp_dir/lib/utils/json.sh"
 bootstrap_buildpack() {
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
     echo "---> Bootstrapping buildpack"
-    bash "$bp_dir/bin/bootstrap" $bp_dir
+    bash -- "$bp_dir/bin/bootstrap" "$bp_dir"
   fi
 }
 
@@ -44,25 +44,24 @@ install_or_reuse_node() {
 
   engine_node=$(json_get_key "$build_dir/package.json" ".engines.node")
   node_version=${engine_node:-10.x}
-  resolved_data=$(resolve-version node $node_version)
-  node_url=$(echo $resolved_data | cut -f2 -d " ")
-  node_version=$(echo $resolved_data | cut -f1 -d " ")
+  resolved_data=$(resolve-version node "$node_version")
+  node_url=$(echo "$resolved_data" | cut -f2 -d " ")
+  node_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if [[ $node_version == $([[ -f ${layer_dir}.toml ]] && cat ${layer_dir}.toml | yj -t | jq -r .metadata.version) ]]; then
-    echo "---> Reusing Node v$node_version"
+  if [[ $node_version == $([[ -f "${layer_dir}.toml" ]] && cat "${layer_dir}.toml" | yj -t | jq -r ".metadata.version") ]]; then
+    echo "---> Reusing Node v${node_version}"
   else
-    echo "---> Downloading and extracting Node v$node_version"
+    echo "---> Downloading and extracting Node v${node_version}"
 
-    mkdir -p ${layer_dir}
-    rm -rf ${layer_dir}/*
+    mkdir -p "${layer_dir}"
+    rm -rf "${layer_dir}"/*
 
-    echo "cache = true" > ${layer_dir}.toml
-    echo "build = true" >> ${layer_dir}.toml
-    echo "launch = true" >> ${layer_dir}.toml
-    echo -e "[metadata]\nversion = \"$node_version\"" >> ${layer_dir}.toml
+    echo "cache = true" > "${layer_dir}.toml"
+    echo "build = true" >> "${layer_dir}.toml"
+    echo "launch = true" >> "${layer_dir}.toml"
+    echo -e "[metadata]\nversion = \"$node_version\"" >> "${layer_dir}.toml"
 
-    wget -qO - $node_url | tar xzf - -C ${layer_dir}
-    mv ${layer_dir}/*/* ${layer_dir}
+    curl -sL "$node_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi
 }
 
@@ -77,26 +76,23 @@ install_or_reuse_yarn() {
 
   engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
   yarn_version=${engine_yarn:-1.x}
-  resolved_data=$(resolve-version yarn $yarn_version)
-  yarn_url=$(echo $resolved_data | cut -f2 -d " ")
-  yarn_version=$(echo $resolved_data | cut -f1 -d " ")
+  resolved_data=$(resolve-version yarn "$yarn_version")
+  yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
+  yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if $use_yarn; then
-    if [[ $yarn_version == $([[ -f ${layer_dir}.toml ]] && cat ${layer_dir}.toml | yj -t | jq -r .metadata.version) ]]; then
-      echo "---> Reusing yarn@$yarn_version"
-    else
-      echo "---> Installing yarn@$yarn_version"
+  if [[ $yarn_version == $([[ -f "${layer_dir}.toml" ]] && cat "${layer_dir}.toml" | yj -t | jq -r ".metadata.version") ]]; then
+    echo "---> Reusing yarn@${yarn_version}"
+  else
+    echo "---> Installing yarn@${yarn_version}"
 
-      mkdir -p ${layer_dir}
-      rm -rf ${layer_dir}/*
+    mkdir -p "$layer_dir"
+    rm -rf "$layer_dir"/*
 
-      echo "cache = true" > ${layer_dir}.toml
-      echo "build = true" >> ${layer_dir}.toml
-      echo "launch = true" >> ${layer_dir}.toml
-      echo -e "[metadata]\nversion = \"$yarn_version\"" >> ${layer_dir}.toml
+    echo "cache = true" > "${layer_dir}.toml"
+    echo "build = true" >> "${layer_dir}.toml"
+    echo "launch = true" >> "${layer_dir}.toml"
+    echo -e "[metadata]\nversion = \"$yarn_version\"" >> "${layer_dir}.toml"
 
-      wget -qO - $yarn_url | tar xzf - -C ${layer_dir}
-      mv ${layer_dir}/*/* ${layer_dir}
-    fi
+    curl -sL "$yarn_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi
 }
