@@ -16,14 +16,17 @@ bootstrap_buildpack() {
 install_or_reuse_toolbox() {
   local layer_dir=$1
 
+  echo "---> Installing tools:"
   mkdir -p "${layer_dir}/bin"
 
   if [[ ! -f "${layer_dir}/bin/jq" ]]; then
+    echo "jq"
     curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > "${layer_dir}/bin/jq" \
       && chmod +x "${layer_dir}/bin/jq"
   fi
 
   if [[ ! -f "${layer_dir}/bin/yj" ]]; then
+    echo "yj"
     curl -Ls https://github.com/sclevine/yj/releases/download/v2.0/yj-linux > "${layer_dir}/bin/yj" \
       && chmod +x "${layer_dir}/bin/yj"
   fi
@@ -42,8 +45,11 @@ install_or_reuse_node() {
   local resolved_data
   local node_url
 
+  echo "---> Getting Node version"
   engine_node=$(json_get_key "$build_dir/package.json" ".engines.node")
   node_version=${engine_node:-10.x}
+
+  echo "---> Resolving Node version"
   resolved_data=$(resolve-version node "$node_version")
   node_url=$(echo "$resolved_data" | cut -f2 -d " ")
   node_version=$(echo "$resolved_data" | cut -f1 -d " ")
