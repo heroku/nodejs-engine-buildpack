@@ -43,6 +43,8 @@ describe "lib/build.sh"
     layers_dir=$(create_temp_layer_dir)
     project_dir=$(create_temp_project_dir)
 
+    export PATH=$layers_dir/toolbox/bin:$PATH
+
     it "creates a toolbox layer"
       install_or_reuse_toolbox "$layers_dir/toolbox" $project_dir
 
@@ -78,8 +80,7 @@ describe "lib/build.sh"
   describe "parse_package_json_engines"
     layers_dir=$(create_temp_layer_dir)
 
-    # prepare layers
-    touch "${layers_dir}/nodejs.toml"
+    echo -e "[metadata]\n" > "${layers_dir}/nodejs.toml"
     create_temp_package_json
 
     parse_package_json_engines "$layers_dir/nodejs" "tmp"
