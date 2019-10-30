@@ -76,6 +76,33 @@ install_or_reuse_node() {
   fi
 }
 
+parse_package_json_engines() {
+  local layer_dir=$1
+  local build_dir=$2
+
+  local engine_npm
+  local engine_yarn
+  local npm_version
+  local yarn_version
+  local resolved_data
+  local yarn_url
+
+  engine_npm=$(json_get_key "$build_dir/package.json" ".engines.npm")
+  engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
+
+  npm_version=${engine_npm:-6.x}
+  yarn_version=${engine_yarn:-1.x}
+  resolved_data=$(resolve-version yarn "$yarn_version")
+  yarn_url=$(echo "$resolved_yarn_data" | cut -f2 -d " ")
+  yarn_version=$(echo "$resolved_yarn_data" | cut -f1 -d " ")
+
+  {
+    echo "npm_version = \"$npm_version\""
+    echo "yarn_url = \"$yarn_url\""
+    echo "yarn_version = \"$yarn_version\""
+  } >> "${layer_dir}.toml"
+}
+
 install_or_reuse_yarn() {
   local layer_dir=$1
   local build_dir=$2
