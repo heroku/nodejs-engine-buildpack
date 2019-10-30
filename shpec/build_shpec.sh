@@ -36,6 +36,7 @@ rm_binaries() {
 describe "lib/build.sh"
   rm_binaries
   create_binaries
+
   export PATH=$bp_dir/bin:$PATH
 
   describe "install_or_reuse_toolbox"
@@ -100,7 +101,6 @@ describe "lib/build.sh"
 
   describe "install_or_reuse_yarn"
     layers_dir=$(create_temp_layer_dir)
-    export PATH=$bp_dir/bin:$PATH
 
     it "creates a yarn layer when it does not exist"
       assert file_absent "$layers_dir/yarn/bin/yarn"

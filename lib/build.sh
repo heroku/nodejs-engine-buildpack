@@ -94,8 +94,8 @@ parse_package_json_engines() {
   npm_version=${engine_npm:-6.x}
   yarn_version=${engine_yarn:-1.x}
   resolved_data=$(resolve-version yarn "$yarn_version")
-  yarn_url=$(echo "$resolved_yarn_data" | cut -f2 -d " ")
-  yarn_version=$(echo "$resolved_yarn_data" | cut -f1 -d " ")
+  yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
+  yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
   {
     echo "npm_version = \"$npm_version\""
