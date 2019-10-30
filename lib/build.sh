@@ -2,8 +2,10 @@
 
 set -e
 
+# shellcheck disable=SC2128
 bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
+# shellcheck source=/dev/null
 source "$bp_dir/lib/utils/json.sh"
 
 bootstrap_buildpack() {
@@ -54,18 +56,21 @@ install_or_reuse_node() {
   node_url=$(echo "$resolved_data" | cut -f2 -d " ")
   node_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if [[ $node_version == $([[ -f "${layer_dir}.toml" ]] && cat "${layer_dir}.toml" | yj -t | jq -r ".metadata.version") ]]; then
+  if [[ $node_version == $([[ -f "${layer_dir}.toml" ]] && yj -t < "${layer_dir}.toml" | jq -r ".metadata.version") ]]; then
     echo "---> Reusing Node v${node_version}"
   else
     echo "---> Downloading and extracting Node v${node_version}"
 
     mkdir -p "${layer_dir}"
-    rm -rf "${layer_dir}"/*
+    rm -rf "${layer_dir:?}"/*
 
     echo "cache = true" > "${layer_dir}.toml"
-    echo "build = true" >> "${layer_dir}.toml"
-    echo "launch = true" >> "${layer_dir}.toml"
-    echo -e "[metadata]\nversion = \"$node_version\"" >> "${layer_dir}.toml"
+
+    {
+      echo "build = true"
+      echo "launch = true"
+      echo -e "[metadata]\nversion = \"$node_version\""
+    } >> "${layer_dir}.toml"
 
     curl -sL "$node_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi
@@ -86,18 +91,21 @@ install_or_reuse_yarn() {
   yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if [[ $yarn_version == $([[ -f "${layer_dir}.toml" ]] && cat "${layer_dir}.toml" | yj -t | jq -r ".metadata.version") ]]; then
+  if [[ $yarn_version == $([[ -f "${layer_dir}.toml" ]] && yj -t < "${layer_dir}.toml" | jq -r ".metadata.version") ]]; then
     echo "---> Reusing yarn@${yarn_version}"
   else
     echo "---> Installing yarn@${yarn_version}"
 
     mkdir -p "$layer_dir"
-    rm -rf "$layer_dir"/*
+    rm -rf "${layer_dir:?}"/*
 
     echo "cache = true" > "${layer_dir}.toml"
-    echo "build = true" >> "${layer_dir}.toml"
-    echo "launch = true" >> "${layer_dir}.toml"
-    echo -e "[metadata]\nversion = \"$yarn_version\"" >> "${layer_dir}.toml"
+
+    {
+      echo "build = true"
+      echo "launch = true"
+      echo -e "[metadata]\nversion = \"$yarn_version\""
+    } >> "${layer_dir}.toml"
 
     curl -sL "$yarn_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi

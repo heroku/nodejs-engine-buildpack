@@ -13,7 +13,9 @@ GO111MODULE := on
 VERSION := "v$$(cat buildpack.toml | grep version | sed -e 's/version = //g' | xargs)"
 
 test:
-	make unit-test && make binary-test
+	make shellcheck
+	make binary-test
+	make unit-test
 
 unit-test:
 	shpec ./shpec/*_shpec.sh
@@ -43,4 +45,4 @@ release:
 
 shellcheck:
 	@shellcheck -x bin/bootstrap bin/build bin/detect
-	@shellcheck -x lib/**
+	@shellcheck -x lib/*.sh lib/utils/*.sh

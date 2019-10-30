@@ -3,9 +3,12 @@ set -eu
 set -o pipefail
 
 layers_dir=$1
+
+# shellcheck disable=SC2128
 bp_dir=$(cd "$(dirname "$0")/.."; pwd)
 build_dir=$(pwd)
 
+# shellcheck source=/dev/null
 source "$bp_dir/lib/build.sh"
 
 echo "---> Node.js Buildpack"
