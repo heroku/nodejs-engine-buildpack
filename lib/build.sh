@@ -50,7 +50,7 @@ install_or_reuse_node() {
 
   echo "---> Getting Node version"
   engine_node=$(json_get_key "$build_dir/package.json" ".engines.node")
-  node_version=${engine_node:-10.x}
+  node_version=${engine_node:-12.x}
 
   echo "---> Resolving Node version"
   resolved_data=$(resolve-version node "$node_version")
