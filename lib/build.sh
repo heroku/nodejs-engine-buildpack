@@ -7,6 +7,7 @@ bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
 # shellcheck source=/dev/null
 source "$bp_dir/lib/utils/json.sh"
+source "$bp_dir/lib/utils/toml.sh"
 
 bootstrap_buildpack() {
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
@@ -56,7 +57,7 @@ install_or_reuse_node() {
   node_url=$(echo "$resolved_data" | cut -f2 -d " ")
   node_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if [[ $node_version == $([[ -f "${layer_dir}.toml" ]] && yj -t < "${layer_dir}.toml" | jq -r ".metadata.version") ]]; then
+  if [[ $node_version == $(toml_get_key_from_metadata "${layer_dir}.toml" "version") ]]; then
     echo "---> Reusing Node v${node_version}"
   else
     echo "---> Downloading and extracting Node v${node_version}"
@@ -118,7 +119,7 @@ install_or_reuse_yarn() {
   yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  if [[ $yarn_version == $([[ -f "${layer_dir}.toml" ]] && yj -t < "${layer_dir}.toml" | jq -r ".metadata.version") ]]; then
+  if [[ $yarn_version == $(toml_get_key_from_metadata "${layer_dir}.toml" "yarn_version") ]]; then
     echo "---> Reusing yarn@${yarn_version}"
   else
     echo "---> Installing yarn@${yarn_version}"
