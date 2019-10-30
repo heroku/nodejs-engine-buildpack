@@ -6,7 +6,9 @@ bp_dir=$1
 
 install_go() {
   local go_dir="${1:?}"
-  local go_tgz="$(mktemp /tmp/go.tgz.XXXXXX)"
+  local go_tgz
+
+  go_tgz="$(mktemp /tmp/go.tgz.XXXXXX)"
 
   curl --retry 3 -sf -o "$go_tgz" -L https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz
   tar -C "$go_dir" -xzf "$go_tgz"
@@ -14,15 +16,15 @@ install_go() {
 
 build_cmd() {
   local cmd=$1
-  go get -d ./cmd/${cmd}/...
-  go build -o $bp_dir/bin/$cmd ./cmd/${cmd}/...
-  chmod +x $bp_dir/bin/$cmd
+  go get -d "./cmd/${cmd}/..."
+  go build -o "$bp_dir/bin/$cmd" "./cmd/${cmd}/..."
+  chmod +x "$bp_dir/bin/$cmd"
 }
 
 go_dir="$(mktemp -d)"
-install_go $go_dir
+install_go "$go_dir"
 export PATH="$PATH:${go_dir}/go/bin"
 
-cd $bp_dir
+cd "$bp_dir"
 
 build_cmd "resolve-version"
