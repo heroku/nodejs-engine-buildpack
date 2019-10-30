@@ -19,7 +19,7 @@ bootstrap_buildpack() {
 install_or_reuse_toolbox() {
   local layer_dir=$1
 
-  echo "---> Installing tools:"
+  echo "---> Installing toolbox"
   mkdir -p "${layer_dir}/bin"
 
   if [[ ! -f "${layer_dir}/bin/jq" ]]; then
