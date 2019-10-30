@@ -15,7 +15,7 @@ create_temp_project_dir() {
 
 create_temp_package_json() {
   mkdir -p "tmp"
-  cp "./fixtures/package-fixed-versions.json" "tmp/package.json"
+  cp "./fixtures/package-patch-versions.json" "tmp/package.json"
 }
 
 rm_temp_dirs() {

@@ -7,6 +7,7 @@ bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
 # shellcheck source=/dev/null
 source "$bp_dir/lib/utils/json.sh"
+# shellcheck source=/dev/null
 source "$bp_dir/lib/utils/toml.sh"
 
 bootstrap_buildpack() {
