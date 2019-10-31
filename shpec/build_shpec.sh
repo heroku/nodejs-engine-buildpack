@@ -131,7 +131,7 @@ describe "lib/build.sh"
 
       assert file_present "$layers_dir/launch.toml"
 
-      rm "tmp/launch.toml"
+      rm "$layers_dir/launch.toml"
     end
 
     it "creates a launch.toml file when there is server.js"
@@ -141,7 +141,7 @@ describe "lib/build.sh"
 
       assert file_present "$layers_dir/launch.toml"
 
-      rm "tmp/launch.toml"
+      rm "$layers_dir/launch.toml"
     end
 
     it "does not create launch.toml when no js initialize files"
@@ -151,6 +151,8 @@ describe "lib/build.sh"
 
       assert file_absent "$layers_dir/launch.toml"
     end
+
+    rm_temp_dirs "$layers_dir"
   end
 
   rm_binaries
