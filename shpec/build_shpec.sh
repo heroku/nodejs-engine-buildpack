@@ -124,7 +124,7 @@ describe "lib/build.sh"
     mkdir -p "tmp"
     touch "tmp/server.js" "tmp/index.js"
 
-    it "creates a launch.toml file when there is index.js"
+    it "creates a launch.toml file when there is index.js and server.js"
       assert file_absent "$layers_dir/launch.toml"
 
       write_launch_toml "tmp" "$layers_dir/launch.toml"
@@ -134,7 +134,9 @@ describe "lib/build.sh"
       rm "$layers_dir/launch.toml"
     end
 
-    it "creates a launch.toml file when there is server.js"
+    it "creates a launch.toml file when there is server.js and no index.js"
+      rm "tmp/index.js"
+
       assert file_absent "$layers_dir/launch.toml"
 
       write_launch_toml "tmp" "$layers_dir/launch.toml"
@@ -145,6 +147,8 @@ describe "lib/build.sh"
     end
 
     it "does not create launch.toml when no js initialize files"
+      rm "tmp/server.js"
+      
       assert file_absent "$layers_dir/launch.toml"
 
       write_launch_toml "tmp" "$layers_dir/launch.toml"
