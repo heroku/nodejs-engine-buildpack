@@ -139,3 +139,29 @@ install_or_reuse_yarn() {
     curl -sL "$yarn_url" | tar xz --strip-components=1 -C "$layer_dir"
   fi
 }
+
+write_launch_toml() {
+  local build_dir=$1
+  local launch_toml=$2
+
+  local command
+
+  if [[ -f "$build_dir/index.js" ]]; then
+    command="node index.js"
+  fi
+
+  if [[ -f "$build_dir/server.js" ]]; then
+    command="node server.js"
+  fi
+
+  if [[ ! $command ]]; then
+    echo "No file to start server"
+    echo "either use 'docker run' to start container or add index.js or server.js"
+  else
+    cat <<TOML > "$launch_toml"
+[[processes]]
+type = "web"
+command = "$command"
+TOML
+  fi
+}

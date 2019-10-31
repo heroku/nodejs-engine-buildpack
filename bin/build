@@ -30,3 +30,5 @@ if [[ -f "yarn.lock" ]]; then
 	install_or_reuse_yarn "$layers_dir/yarn" "$build_dir"
 	export PATH=$layers_dir/yarn/bin:$PATH
 fi
+
+write_launch_toml "$build_dir" "$layers_dir/launch.toml"
