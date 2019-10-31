@@ -154,7 +154,7 @@ write_launch_toml() {
     command="node server.js"
   fi
 
-  if [[ !$command ]]; then
+  if [[ ! $command ]]; then
     echo "No file to start server"
     echo "either use 'docker run' to start container or add index.js or server.js"
   else
