@@ -31,4 +31,4 @@ if [[ -f "yarn.lock" ]]; then
 	export PATH=$layers_dir/yarn/bin:$PATH
 fi
 
-create_launch_toml "$build_dir" "$layers_dir/launch.toml"
+write_launch_toml "$build_dir" "$layers_dir/launch.toml"

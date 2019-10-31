@@ -127,7 +127,7 @@ describe "lib/build.sh"
     it "creates a launch.toml file when there is index.js"
       assert file_absent "$layers_dir/launch.toml"
 
-      create_launch_toml "tmp" "$layers_dir/launch.toml"
+      write_launch_toml "tmp" "$layers_dir/launch.toml"
 
       assert file_present "$layers_dir/launch.toml"
 
@@ -137,7 +137,7 @@ describe "lib/build.sh"
     it "creates a launch.toml file when there is server.js"
       assert file_absent "$layers_dir/launch.toml"
 
-      create_launch_toml "tmp" "$layers_dir/launch.toml"
+      write_launch_toml "tmp" "$layers_dir/launch.toml"
 
       assert file_present "$layers_dir/launch.toml"
 
@@ -147,7 +147,7 @@ describe "lib/build.sh"
     it "does not create launch.toml when no js initialize files"
       assert file_absent "$layers_dir/launch.toml"
 
-      create_launch_toml "tmp" "$layers_dir/launch.toml"
+      write_launch_toml "tmp" "$layers_dir/launch.toml"
 
       assert file_absent "$layers_dir/launch.toml"
     end
