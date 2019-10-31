@@ -118,5 +118,40 @@ describe "lib/build.sh"
     rm_temp_dirs "$layers_dir"
   end
 
+  describe "write_launch_toml"
+    layers_dir=$(create_temp_layer_dir)
+
+    mkdir -p "tmp"
+    touch "tmp/server.js" "tmp/index.js"
+
+    it "creates a launch.toml file when there is index.js"
+      assert file_absent "$layers_dir/launch.toml"
+
+      create_launch_toml "tmp" "$layers_dir/launch.toml"
+
+      assert file_present "$layers_dir/launch.toml"
+
+      rm "tmp/launch.toml"
+    end
+
+    it "creates a launch.toml file when there is server.js"
+      assert file_absent "$layers_dir/launch.toml"
+
+      create_launch_toml "tmp" "$layers_dir/launch.toml"
+
+      assert file_present "$layers_dir/launch.toml"
+
+      rm "tmp/launch.toml"
+    end
+
+    it "does not create launch.toml when no js initialize files"
+      assert file_absent "$layers_dir/launch.toml"
+
+      create_launch_toml "tmp" "$layers_dir/launch.toml"
+
+      assert file_absent "$layers_dir/launch.toml"
+    end
+  end
+
   rm_binaries
 end
