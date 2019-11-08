@@ -46,14 +46,14 @@ describe "lib/build.sh"
     export PATH=$layers_dir/toolbox/bin:$PATH
 
     it "creates a toolbox layer"
-      install_or_reuse_toolbox "$layers_dir/toolbox" $project_dir
+      install_or_reuse_toolbox "$layers_dir/toolbox"
 
       assert file_present "$layers_dir/toolbox/bin/jq"
       assert file_present "$layers_dir/toolbox/bin/yj"
     end
 
     it "creates a toolbox.toml"
-      install_or_reuse_toolbox "$layers_dir/toolbox" $project_dir
+      install_or_reuse_toolbox "$layers_dir/toolbox"
 
       assert file_present "$layers_dir/toolbox.toml"
     end
@@ -80,19 +80,19 @@ describe "lib/build.sh"
   describe "parse_package_json_engines"
     layers_dir=$(create_temp_layer_dir)
 
-    echo -e "[metadata]\n" > "${layers_dir}/nodejs.toml"
+    echo -e "[metadata]\n" > "${layers_dir}/package_manager_metadata.toml"
     create_temp_package_json
 
-    parse_package_json_engines "$layers_dir/nodejs" "tmp"
+    parse_package_json_engines "$layers_dir/package_manager_metadata" "tmp"
 
     it "writes npm version to layers/node.toml"
-      local npm_version=$(toml_get_key_from_metadata "$layers_dir/nodejs.toml" "npm_version")
+      local npm_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "npm_version")
 
       assert equal "6.9.1" "$npm_version"
     end
 
     it "writes yarn_version to layers/node.toml"
-      local yarn_version=$(toml_get_key_from_metadata "$layers_dir/nodejs.toml" "yarn_version")
+      local yarn_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "yarn_version")
 
       assert equal "1.19.1" "$yarn_version"
     end

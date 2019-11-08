@@ -24,13 +24,13 @@ install_or_reuse_toolbox() {
   mkdir -p "${layer_dir}/bin"
 
   if [[ ! -f "${layer_dir}/bin/jq" ]]; then
-    echo "jq"
+    echo "- jq"
     curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > "${layer_dir}/bin/jq" \
       && chmod +x "${layer_dir}/bin/jq"
   fi
 
   if [[ ! -f "${layer_dir}/bin/yj" ]]; then
-    echo "yj"
+    echo "- yj"
     curl -Ls https://github.com/sclevine/yj/releases/download/v2.0/yj-linux > "${layer_dir}/bin/yj" \
       && chmod +x "${layer_dir}/bin/yj"
   fi
@@ -89,6 +89,8 @@ parse_package_json_engines() {
   local resolved_data
   local yarn_url
 
+  echo "---> Parsing package.json"
+
   engine_npm=$(json_get_key "$build_dir/package.json" ".engines.npm")
   engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
 
@@ -98,11 +100,16 @@ parse_package_json_engines() {
   yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  {
-    echo "npm_version = \"$npm_version\""
-    echo "yarn_url = \"$yarn_url\""
-    echo "yarn_version = \"$yarn_version\""
-  } >> "${layer_dir}.toml"
+  cat << TOML > "${layer_dir}.toml"
+cache = false
+build = true
+launch = false
+
+[metadata]
+npm_version = "$npm_version"
+yarn_url = "$yarn_url"
+yarn_version = "$yarn_version"
+TOML
 }
 
 install_or_reuse_yarn() {
@@ -146,12 +153,12 @@ write_launch_toml() {
 
   local command
 
-  if [[ -f "$build_dir/index.js" ]]; then
-    command="node index.js"
-  fi
-
   if [[ -f "$build_dir/server.js" ]]; then
     command="node server.js"
+  fi
+
+  if [[ -f "$build_dir/index.js" ]]; then
+    command="node index.js"
   fi
 
   if [[ ! $command ]]; then

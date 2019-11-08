@@ -1,2 +1,4 @@
 *.tgz
 bin/resolve-version
+
+tmp/
