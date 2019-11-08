@@ -89,6 +89,8 @@ parse_package_json_engines() {
   local resolved_data
   local yarn_url
 
+  echo "---> Parsing package.json"
+
   engine_npm=$(json_get_key "$build_dir/package.json" ".engines.npm")
   engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
 
@@ -98,11 +100,16 @@ parse_package_json_engines() {
   yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
-  {
-    echo "npm_version = \"$npm_version\""
-    echo "yarn_url = \"$yarn_url\""
-    echo "yarn_version = \"$yarn_version\""
-  } >> "${layer_dir}.toml"
+  cat << TOML > "${layer_dir}.toml"
+cache = false
+build = true
+launch = false
+
+[metadata]
+npm_version = "$npm_version"
+yarn_url = "$yarn_url"
+yarn_version = "$yarn_version"
+TOML
 }
 
 install_or_reuse_yarn() {
