@@ -153,12 +153,12 @@ write_launch_toml() {
 
   local command
 
-  if [[ -f "$build_dir/index.js" ]]; then
-    command="node index.js"
-  fi
-
   if [[ -f "$build_dir/server.js" ]]; then
     command="node server.js"
+  fi
+
+  if [[ -f "$build_dir/index.js" ]]; then
+    command="node index.js"
   fi
 
   if [[ ! $command ]]; then
