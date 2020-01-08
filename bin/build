@@ -15,7 +15,7 @@ echo "---> Node.js Buildpack"
 
 rm -rf node_modules
 
-bootstrap_buildpack
+# bootstrap_buildpack
 export PATH=$bp_dir/bin:$PATH
 
 install_or_reuse_toolbox "$layers_dir/toolbox"

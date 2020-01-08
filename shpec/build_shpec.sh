@@ -5,6 +5,12 @@ source "./lib/utils/json.sh"
 source "./lib/utils/toml.sh"
 source "./lib/build.sh"
 
+bootstrap_buildpack() {
+  if [[ ! -f $bp_dir/bin/resolve-version ]]; then
+    bash -- "$bp_dir/bin/bootstrap" "$bp_dir"
+  fi
+}
+
 create_temp_layer_dir() {
   mktemp -d -t build_shpec_XXXXX
 }
@@ -26,7 +32,7 @@ rm_temp_dirs() {
 create_binaries() {
   stub_command "echo"
   bootstrap_buildpack
-  unstub_command "echo"
+  # unstub_command "echo"
 }
 
 rm_binaries() {
