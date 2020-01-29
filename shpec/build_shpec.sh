@@ -32,17 +32,26 @@ create_binaries() {
 }
 
 rm_binaries() {
-  rm -f $bp_dir/bin/resolve-version
+  rm -f "$bp_dir/bin/resolve-version"
 }
 
 describe "lib/build.sh"
   stub_command "log_info"
   rm_binaries
 
-  export PATH=$bp_dir/bin:$PATH
-
   layers_dir=$(create_temp_layer_dir)
-  create_binaries "$layers_dir/bootstrap"
+
+  describe "boostrap_buildpack"
+    create_binaries "$layers_dir/bootstrap"
+    
+    it "does not write to bin"
+      assert file_absent "bin/resolve-version"
+    end
+
+    it "creates layered bootstrap binaries"
+      assert file_present "$layers_dir/bootstrap/bin/resolve-version"
+    end
+  end
 
   describe "install_or_reuse_toolbox"
     export PATH=$layers_dir/toolbox/bin:$PATH
