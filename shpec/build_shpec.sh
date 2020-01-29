@@ -26,7 +26,9 @@ rm_temp_dirs() {
 }
 
 create_binaries() {
+  stub_command "echo"
   bootstrap_buildpack "$1"
+  unstub_command "echo"
 }
 
 rm_binaries() {
