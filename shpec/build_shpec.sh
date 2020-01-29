@@ -41,11 +41,10 @@ describe "lib/build.sh"
 
   export PATH=$bp_dir/bin:$PATH
 
+  layers_dir=$(create_temp_layer_dir)
+  create_binaries "$layers_dir/bootstrap"
+
   describe "install_or_reuse_toolbox"
-    layers_dir=$(create_temp_layer_dir)
-
-    create_binaries "$layers_dir/bootstrap"
-
     export PATH=$layers_dir/toolbox/bin:$PATH
 
     it "creates a toolbox layer"
