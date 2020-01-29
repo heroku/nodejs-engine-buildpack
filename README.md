@@ -79,6 +79,26 @@ make unit-test
 make binary-tests
 ```
 
+## Contributing
+
+1. Open a pull request.
+2. Make update to `CHANGELOG.md` under `master` with a description (PR title is fine) of the change, the PR number and link to PR.
+3. Let the tests run on CI. When tests pass and PR is approved, the branch is ready to be merged.
+4. Merge branch to `master`.
+
+### Release
+
+Note: if you're not a contributor to this project, a contributor will have to make the release for you.
+
+1. Create a new branch (ie. `1.14.2-release`).
+2. Move the changes from `master` to a new header with the version and date (ie. `1.14.2 (2020-02-30)`).
+3. Open a pull request.
+4. Let the tests run on CI. When tests pass and PR is approved, the branch is ready to be merged.
+5. Merge branch to `master`.
+6. Pull down `master` to local machine.
+7. Tag the current `master` with the version. (`git tag v1.14.2`)
+8. Push up to GitHub. (`git push origin master --tags`) CI will run the suite and create a new release on successful run.
+
 ## Glossary
 
 - buildpacks: provide framework and a runtime for source code. Read more [here](https://buildpacks.io).
