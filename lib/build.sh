@@ -15,7 +15,7 @@ source "$bp_dir/lib/utils/toml.sh"
 install_or_reuse_toolbox() {
   local layer_dir=$1
 
-  log_info "---> Installing toolbox"
+  log_info "Installing toolbox"
   mkdir -p "${layer_dir}/bin"
 
   if [[ ! -f "${layer_dir}/bin/jq" ]]; then
@@ -44,19 +44,19 @@ install_or_reuse_node() {
   local resolved_data
   local node_url
 
-  log_info "---> Getting Node version"
+  log_info "Getting Node version"
   engine_node=$(json_get_key "$build_dir/package.json" ".engines.node")
   node_version=${engine_node:-12.x}
 
-  log_info "---> Resolving Node version"
+  log_info "Resolving Node version"
   resolved_data=$(resolve-version node "$node_version")
   node_url=$(echo "$resolved_data" | cut -f2 -d " ")
   node_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
   if [[ $node_version == $(toml_get_key_from_metadata "${layer_dir}.toml" "version") ]]; then
-    log_info "---> Reusing Node v${node_version}"
+    log_info "Reusing Node v${node_version}"
   else
-    log_info "---> Downloading and extracting Node v${node_version}"
+    log_info "Downloading and extracting Node v${node_version}"
 
     mkdir -p "${layer_dir}"
     rm -rf "${layer_dir:?}"/*
@@ -84,7 +84,7 @@ parse_package_json_engines() {
   local resolved_data
   local yarn_url
 
-  log_info "---> Parsing package.json"
+  log_info "Parsing package.json"
 
   engine_npm=$(json_get_key "$build_dir/package.json" ".engines.npm")
   engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
@@ -123,9 +123,9 @@ install_or_reuse_yarn() {
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
   if [[ $yarn_version == $(toml_get_key_from_metadata "${layer_dir}.toml" "yarn_version") ]]; then
-    log_info "---> Reusing yarn@${yarn_version}"
+    log_info "Reusing yarn@${yarn_version}"
   else
-    log_info "---> Installing yarn@${yarn_version}"
+    log_info "Installing yarn@${yarn_version}"
 
     mkdir -p "$layer_dir"
     rm -rf "${layer_dir:?}"/*

@@ -42,7 +42,7 @@ bootstrap_buildpack() {
   local layer_dir=$1
 
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
-    log_info "---> Bootstrapping buildpack"
+    log_info "Bootstrapping buildpack"
 
     go_dir="$(mktemp -d)"
     install_go "$go_dir"
