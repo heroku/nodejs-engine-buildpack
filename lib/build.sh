@@ -10,13 +10,6 @@ source "$bp_dir/lib/utils/json.sh"
 # shellcheck source=/dev/null
 source "$bp_dir/lib/utils/toml.sh"
 
-bootstrap_buildpack() {
-  if [[ ! -f $bp_dir/bin/resolve-version ]]; then
-    echo "---> Bootstrapping buildpack"
-    bash -- "$bp_dir/bin/bootstrap" "$bp_dir"
-  fi
-}
-
 install_or_reuse_toolbox() {
   local layer_dir=$1
 

@@ -9,14 +9,16 @@ bp_dir=$(cd "$(dirname "$0")/.."; pwd)
 build_dir=$(pwd)
 
 # shellcheck source=/dev/null
+source "$bp_dir/lib/bootstrap.sh"
+
+# shellcheck source=/dev/null
 source "$bp_dir/lib/build.sh"
 
 echo "---> Node.js Buildpack"
 
 rm -rf node_modules
 
-bootstrap_buildpack
-export PATH=$bp_dir/bin:$PATH
+bootstrap_buildpack "$layers_dir/bootstrap"
 
 install_or_reuse_toolbox "$layers_dir/toolbox"
 export PATH=$layers_dir/toolbox/bin:$PATH
