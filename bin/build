@@ -9,12 +9,15 @@ bp_dir=$(cd "$(dirname "$0")/.."; pwd)
 build_dir=$(pwd)
 
 # shellcheck source=/dev/null
+source "$bp_dir/lib/utils/log.sh"
+
+# shellcheck source=/dev/null
 source "$bp_dir/lib/bootstrap.sh"
 
 # shellcheck source=/dev/null
 source "$bp_dir/lib/build.sh"
 
-echo "---> Node.js Buildpack"
+log "---> Node.js Buildpack"
 
 rm -rf node_modules
 

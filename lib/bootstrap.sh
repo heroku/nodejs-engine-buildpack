@@ -5,6 +5,9 @@ set -eo pipefail
 # shellcheck disable=SC2128
 bp_dir=$(cd "$(dirname "$BASH_SOURCE")"; cd ..; pwd)
 
+# shellcheck source=/dev/null
+source "$bp_dir/lib/utils/log.sh"
+
 install_go() {
   local go_dir="${1:?}"
   local go_tgz
@@ -39,7 +42,7 @@ bootstrap_buildpack() {
   local layer_dir=$1
 
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
-    echo "---> Bootstrapping buildpack"
+    log_info "---> Bootstrapping buildpack"
 
     go_dir="$(mktemp -d)"
     install_go "$go_dir"
