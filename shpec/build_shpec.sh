@@ -41,7 +41,6 @@ describe "lib/build.sh"
 
   describe "install_or_reuse_toolbox"
     layers_dir=$(create_temp_layer_dir)
-    project_dir=$(create_temp_project_dir)
 
     create_binaries "$layers_dir/bootstrap"
 
@@ -63,13 +62,14 @@ describe "lib/build.sh"
 
   describe "install_or_reuse_node"
     layers_dir=$(create_temp_layer_dir)
+    project_dir=$(create_temp_project_dir)
     create_binaries "$layers_dir/bootstrap"
 
     it "creates a node layer when it does not exist"
       assert file_absent "$layers_dir/nodejs/bin/node"
       assert file_absent "$layers_dir/nodejs/bin/npm"
 
-      install_or_reuse_node "$layers_dir/nodejs" $project_dir
+      install_or_reuse_node "$layers_dir/nodejs" "$project_dir"
 
       assert file_present "$layers_dir/nodejs/bin/node"
       assert file_present "$layers_dir/nodejs/bin/npm"
@@ -108,6 +108,7 @@ describe "lib/build.sh"
 
   describe "install_or_reuse_yarn"
     layers_dir=$(create_temp_layer_dir)
+    project_dir=$(create_temp_project_dir)
 
     create_binaries "$layers_dir/bootstrap"
 
