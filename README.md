@@ -91,13 +91,14 @@ make binary-tests
 Note: if you're not a contributor to this project, a contributor will have to make the release for you.
 
 1. Create a new branch (ie. `1.14.2-release`).
-2. Move the changes from `master` to a new header with the version and date (ie. `1.14.2 (2020-02-30)`).
-3. Open a pull request.
-4. Let the tests run on CI. When tests pass and PR is approved, the branch is ready to be merged.
-5. Merge branch to `master`.
-6. Pull down `master` to local machine.
-7. Tag the current `master` with the version. (`git tag v1.14.2`)
-8. Push up to GitHub. (`git push origin master --tags`) CI will run the suite and create a new release on successful run.
+2. Update the version in the `buildpack.toml`.
+3. Move the changes from `master` to a new header with the version and date (ie. `1.14.2 (2020-02-30)`).
+4. Open a pull request.
+5. Let the tests run on CI. When tests pass and PR is approved, the branch is ready to be merged.
+6. Merge branch to `master`.
+7. Pull down `master` to local machine.
+8. Tag the current `master` with the version. (`git tag v1.14.2`)
+9. Push up to GitHub. (`git push origin master --tags`) CI will run the suite and create a new release on successful run.
 
 ## Glossary
 
