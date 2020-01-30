@@ -2,7 +2,9 @@ set -e
 set -o pipefail
 
 source "./lib/utils/json.sh"
+source "./lib/utils/log.sh"
 source "./lib/utils/toml.sh"
+source "./lib/bootstrap.sh"
 source "./lib/build.sh"
 
 create_temp_layer_dir() {
@@ -25,24 +27,33 @@ rm_temp_dirs() {
 
 create_binaries() {
   stub_command "echo"
-  bootstrap_buildpack
+  bootstrap_buildpack "$1"
   unstub_command "echo"
 }
 
 rm_binaries() {
-  rm -f $bp_dir/bin/resolve-version
+  rm -f "$bp_dir/bin/resolve-version"
 }
 
 describe "lib/build.sh"
+  stub_command "log_info"
   rm_binaries
-  create_binaries
 
-  export PATH=$bp_dir/bin:$PATH
+  layers_dir=$(create_temp_layer_dir)
+
+  describe "boostrap_buildpack"
+    create_binaries "$layers_dir/bootstrap"
+    
+    it "does not write to bin"
+      assert file_absent "bin/resolve-version"
+    end
+
+    it "creates layered bootstrap binaries"
+      assert file_present "$layers_dir/bootstrap/bin/resolve-version"
+    end
+  end
 
   describe "install_or_reuse_toolbox"
-    layers_dir=$(create_temp_layer_dir)
-    project_dir=$(create_temp_project_dir)
-
     export PATH=$layers_dir/toolbox/bin:$PATH
 
     it "creates a toolbox layer"
@@ -61,12 +72,14 @@ describe "lib/build.sh"
 
   describe "install_or_reuse_node"
     layers_dir=$(create_temp_layer_dir)
+    project_dir=$(create_temp_project_dir)
+    create_binaries "$layers_dir/bootstrap"
 
     it "creates a node layer when it does not exist"
       assert file_absent "$layers_dir/nodejs/bin/node"
       assert file_absent "$layers_dir/nodejs/bin/npm"
 
-      install_or_reuse_node "$layers_dir/nodejs" $project_dir
+      install_or_reuse_node "$layers_dir/nodejs" "$project_dir"
 
       assert file_present "$layers_dir/nodejs/bin/node"
       assert file_present "$layers_dir/nodejs/bin/npm"
@@ -80,6 +93,8 @@ describe "lib/build.sh"
   describe "parse_package_json_engines"
     layers_dir=$(create_temp_layer_dir)
 
+    create_binaries "$layers_dir/bootstrap"
+
     echo -e "[metadata]\n" > "${layers_dir}/package_manager_metadata.toml"
     create_temp_package_json
 
@@ -92,6 +107,7 @@ describe "lib/build.sh"
     end
 
     it "writes yarn_version to layers/node.toml"
+      stub_command "echo"
       local yarn_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "yarn_version")
 
       assert equal "1.19.1" "$yarn_version"
@@ -102,6 +118,9 @@ describe "lib/build.sh"
 
   describe "install_or_reuse_yarn"
     layers_dir=$(create_temp_layer_dir)
+    project_dir=$(create_temp_project_dir)
+
+    create_binaries "$layers_dir/bootstrap"
 
     it "creates a yarn layer when it does not exist"
       assert file_absent "$layers_dir/yarn/bin/yarn"
@@ -120,6 +139,8 @@ describe "lib/build.sh"
 
   describe "write_launch_toml"
     layers_dir=$(create_temp_layer_dir)
+
+    create_binaries "$layers_dir/bootstrap"
 
     mkdir -p "tmp"
     touch "tmp/server.js" "tmp/index.js"
@@ -148,7 +169,7 @@ describe "lib/build.sh"
 
     it "does not create launch.toml when no js initialize files"
       rm "tmp/server.js"
-      
+
       assert file_absent "$layers_dir/launch.toml"
 
       write_launch_toml "tmp" "$layers_dir/launch.toml"
@@ -159,5 +180,6 @@ describe "lib/build.sh"
     rm_temp_dirs "$layers_dir"
   end
 
+  unstub_command "log_info"
   rm_binaries
 end

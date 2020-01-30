@@ -44,5 +44,5 @@ release:
 	@git push --tags origin master
 
 shellcheck:
-	@shellcheck -x bin/bootstrap bin/build bin/detect
+	@shellcheck -x bin/build bin/detect
 	@shellcheck -x lib/*.sh lib/utils/*.sh
