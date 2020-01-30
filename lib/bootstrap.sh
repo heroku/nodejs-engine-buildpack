@@ -31,11 +31,8 @@ create_bootstrap_layer() {
   mkdir -p "${layer_dir}"
 
   echo "cache = true" > "${layer_dir}.toml"
-
-  {
-    echo "build = true"
-    echo "launch = false"
-  } >> "${layer_dir}.toml"
+  echo "build = true" >> "${layer_dir}.toml"
+  echo "launch = false" >> "${layer_dir}.toml"
 }
 
 bootstrap_buildpack() {
