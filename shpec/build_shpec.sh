@@ -1,4 +1,4 @@
-set -e
+set -eu
 set -o pipefail
 
 source "./lib/utils/json.sh"
