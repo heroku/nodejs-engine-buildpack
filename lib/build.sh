@@ -146,7 +146,7 @@ write_launch_toml() {
   local build_dir=$1
   local launch_toml=$2
 
-  local command
+  local command=1
 
   if [[ -f "$build_dir/server.js" ]]; then
     command="node server.js"
@@ -156,7 +156,7 @@ write_launch_toml() {
     command="node index.js"
   fi
 
-  if [[ ! $command ]]; then
+  if [[ "$command" == 1 ]]; then
     log_info "No file to start server"
     log_info "either use 'docker run' to start container or add index.js or server.js"
   else
