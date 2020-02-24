@@ -43,7 +43,7 @@ describe "lib/build.sh"
 
   describe "boostrap_buildpack"
     create_binaries "$layers_dir/bootstrap"
-    
+
     it "does not write to bin"
       assert file_absent "bin/resolve-version"
     end

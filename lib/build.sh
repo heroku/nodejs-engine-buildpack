@@ -156,9 +156,9 @@ write_launch_toml() {
     command="node index.js"
   fi
 
-  if [[ ! $command ]]; then
-    echo "No file to start server"
-    echo "either use 'docker run' to start container or add index.js or server.js"
+  if [[ ! "$command" ]]; then
+    log_info "No file to start server"
+    log_info "either use 'docker run' to start container or add index.js or server.js"
   else
     cat <<TOML > "$launch_toml"
 [[processes]]

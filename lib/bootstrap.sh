@@ -37,6 +37,7 @@ create_bootstrap_layer() {
 
 bootstrap_buildpack() {
   local layer_dir=$1
+  local go_dir
 
   if [[ ! -f $bp_dir/bin/resolve-version ]]; then
     log_info "Bootstrapping buildpack"
