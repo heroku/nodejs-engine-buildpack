@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -e
 set -o pipefail
 
@@ -21,7 +23,7 @@ create_temp_package_json() {
 }
 
 rm_temp_dirs() {
-  rm -rf $1
+  rm -rf "$1"
   rm -rf "tmp"
 }
 
@@ -101,14 +103,14 @@ describe "lib/build.sh"
     parse_package_json_engines "$layers_dir/package_manager_metadata" "tmp"
 
     it "writes npm version to layers/node.toml"
-      local npm_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "npm_version")
+      npm_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "npm_version")
 
       assert equal "6.9.1" "$npm_version"
     end
 
     it "writes yarn_version to layers/node.toml"
       stub_command "echo"
-      local yarn_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "yarn_version")
+      yarn_version=$(toml_get_key_from_metadata "$layers_dir/package_manager_metadata.toml" "yarn_version")
 
       assert equal "1.19.1" "$yarn_version"
     end
