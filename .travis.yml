@@ -9,7 +9,7 @@ script:
 - make package
 - ls -alh nodejs-engine-buildpack-*.tgz
 env:
-  GO111MODULE: "on"
+  GO114MODULE: "on"
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
