@@ -14,7 +14,7 @@ install_go() {
 
   go_tgz="$(mktemp /tmp/go.tgz.XXXXXX)"
 
-  curl --retry 3 -sf -o "$go_tgz" -L https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz
+  curl --retry 3 -sf -o "$go_tgz" -L https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
   tar -C "$go_dir" -xzf "$go_tgz"
 }
 
