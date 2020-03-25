@@ -36,22 +36,26 @@ create_bootstrap_layer() {
 }
 
 bootstrap_buildpack() {
-  local layer_dir=$1
+  local layer_dir="$1"
   local go_dir
 
-  if [[ ! -f $bp_dir/bin/resolve-version ]]; then
-    log_info "Bootstrapping buildpack"
-
-    go_dir="$(mktemp -d)"
-    install_go "$go_dir"
-    export PATH="$PATH:${go_dir}/go/bin"
-
-    cd "$bp_dir"
-
-    create_bootstrap_layer "$layer_dir"
-    build_cmd "resolve-version" "$layer_dir"
-    export PATH=$layer_dir/bin:$PATH
-  else
+  if [[ -f "$bp_dir/bin/resolve-version" ]]; then
     export PATH=$bp_dir/bin:$PATH
+  else
+    if [[ -f "$layer_dir/bin/resolve-version" ]]; then
+      log_info "Using previously bootstrapped binaries"
+    else
+      log_info "Bootstrapping buildpack"
+
+      go_dir="$(mktemp -d)"
+      install_go "$go_dir"
+      export PATH="$PATH:${go_dir}/go/bin"
+
+      cd "$bp_dir"
+
+      create_bootstrap_layer "$layer_dir"
+      build_cmd "resolve-version" "$layer_dir"
+    fi
+    export PATH=$layer_dir/bin:$PATH
   fi
 }
