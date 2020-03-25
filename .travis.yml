@@ -3,7 +3,7 @@ language: go
 services:
 - docker
 go:
-- 1.12.x
+- 1.14.x
 script:
 - make test
 - make package

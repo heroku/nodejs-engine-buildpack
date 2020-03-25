@@ -25,7 +25,7 @@ unit-test:
 
 binary-test:
 	-docker rm -f nodejs-engine-buildpack-test
-	@docker create --name nodejs-engine-buildpack-test --workdir /app golang:1.12.9 bash -c "go test ./... -tags=integration"
+	@docker create --name nodejs-engine-buildpack-test --workdir /app golang:1.14 bash -c "go test ./... -tags=integration"
 	@docker cp . nodejs-engine-buildpack-test:/app
 	@docker start -a nodejs-engine-buildpack-test
 
