@@ -38,7 +38,7 @@ describe "lib/detect.sh"
       touch "$project_dir/buildplan.toml"
       write_to_build_plan "$project_dir/buildplan.toml"
       actual=$(cat "$project_dir/buildplan.toml")
-      # echo "$actual"
+      echo "$actual"
       expected=$(cat <<EOF
   [[provides]]
   name = "node"
