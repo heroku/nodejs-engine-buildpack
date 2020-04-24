@@ -19,7 +19,7 @@ source "$bp_dir/lib/build.sh"
 
 log_info "Node.js Buildpack"
 
-rm -rf node_modules
+rm -rf node_modules/*
 
 bootstrap_buildpack "$layers_dir/bootstrap"
 
