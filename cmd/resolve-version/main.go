@@ -275,6 +275,7 @@ func fetchS3Result(bucketName string, region string, options map[string]string) 
 	var result result
 	v := url.Values{}
 	v.Set("list-type", "2")
+	v.Set("max-keys", "2000")
 	for key, val := range options {
 		v.Set(key, val)
 	}
