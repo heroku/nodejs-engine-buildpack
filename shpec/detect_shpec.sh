@@ -11,7 +11,7 @@ create_temp_project_dir() {
 
 describe "lib/detect.sh"
   describe "detect_package_json"
-    it "exits with 1 if there is no package.json"
+    it "exits with 0 if there is no package.json"
       project_dir=$(create_temp_project_dir)
 
       set +e
@@ -19,7 +19,7 @@ describe "lib/detect.sh"
       loc_var=$?
       set -e
 
-      assert equal "$loc_var" 1
+      assert equal "$loc_var" 0
     end
 
     it "exits with 0 if there is package.json"
