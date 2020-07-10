@@ -1,7 +1,17 @@
 version: 2.1
 jobs:
-  test-heroku-20:
+  unit-test-heroku-20:
     steps:
       - run:
           name: Unit tests on Heroku 20
           command: make unit-test-heroku-20
+  unit-test-heroku-18:
+    steps:
+      - run:
+          name: Unit tests on Heroku 18
+          command: make unit-test-heroku-18
+  unit-test-heroku-16:
+    steps:
+      - run:
+          name: Unit tests on Heroku 16
+          command: make unit-test-heroku-16
