@@ -1,0 +1,27 @@
+version: 2.1
+jobs:
+  unit-test-heroku-stack:
+    parameters:
+      stack:
+        type: "string"
+        default: "heroku-20"
+    machine:
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Shpec unit tests on <<parameters.stack>>
+          command: make unit-test-<<parameters.stack>>
+workflows:
+  version: 2
+  run-unit-tests:
+    jobs:
+      - unit-test-heroku-stack:
+          name: "Unit tests for heroku-20"
+          stack: "heroku-20"
+      - unit-test-heroku-stack:
+          name: "Unit tests for heroku-18"
+          stack: "heroku-18"
+      - unit-test-heroku-stack:
+          name: "Unit tests for heroku-16"
+          stack: "heroku-16"
