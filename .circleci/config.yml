@@ -15,3 +15,8 @@ jobs:
       - run:
           name: Unit tests on Heroku 16
           command: make unit-test-heroku-16
+workflows:
+  jobs:
+    - unit-test-heroku-20
+    - unit-test-heroku-18
+    - unit-test-heroku-16
