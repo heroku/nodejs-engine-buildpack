@@ -17,6 +17,15 @@ test:
 	make binary-test
 	make docker-unit-test
 
+unit-test-heroku-20:
+	@docker run -v $(PWD):/project danielleadams/shpec-heroku-20:0.0.4
+
+unit-test-heroku-18:
+	@docker run -v $(PWD):/project danielleadams/shpec-heroku-18:0.0.4
+
+unit-test-heroku-16:
+	@docker run -v $(PWD):/project danielleadams/shpec-heroku-16:0.0.4
+
 docker-unit-test:
 	@docker run -v $(PWD):/project danielleadams/shpec:latest
 
