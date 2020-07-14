@@ -4,6 +4,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## master
 - Increase `MaxKeys` for listing S3 objects in `resolve-version` query ([#43](https://github.com/heroku/nodejs-engine-buildpack/pull/43))
+- Add Circle CI test integration ([#49](https://github.com/heroku/nodejs-engine-buildpack/pull/49))
 
 ## 0.4.4 (2020-03-25)
 ### Added
