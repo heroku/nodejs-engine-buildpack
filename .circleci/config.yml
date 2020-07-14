@@ -1,20 +1,57 @@
 version: 2.1
+orbs:
+  shellcheck: circleci/shellcheck@1.3.16
+  pack: buildpacks/pack@0.1.4
 jobs:
+  integration-test-nodejs-buildpacks:
+    machine: true
+    steps:
+      - pack/install-pack
+      - checkout
+      - run:
+          name: "Download project code"
+          command: git clone git@github.com:danielleadams/typescript-getting-started.git
+      - run:
+          name: "Set pack builder"
+          command: pack set-default-builder heroku/buildpacks:18
+      - run:
+          name: "Build OCI image with NPM and TypeScript buildpacks"
+          command:
+            pack build circle-build-1
+              --buildpack .
+              --buildpack heroku/nodejs-npm
+              --buildpack heroku/nodejs-typescript
+              --path ./typescript-getting-started
+      - run:
+          name: "Test image"
+          command: docker run circle-build-1 "node -v"
   unit-test-heroku-stack:
     parameters:
       stack:
         type: "string"
         default: "heroku-20"
-    machine:
-      docker_layer_caching: true
+    docker:
+      - image: "danielleadams/shpec-<<parameters.stack>>:latest"
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Shpec unit tests on <<parameters.stack>>
-          command: make unit-test-<<parameters.stack>>
+          command: make unit-test
+  unit-test-binary:
+    docker:
+      - image: circleci/golang:1.14
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Run unit tests for Go
+          command: go test ./... -tags=integration
 workflows:
   version: 2
-  run-unit-tests:
+  run-tests:
     jobs:
       - unit-test-heroku-stack:
           name: "Unit tests for heroku-20"
@@ -25,3 +62,8 @@ workflows:
       - unit-test-heroku-stack:
           name: "Unit tests for heroku-16"
           stack: "heroku-16"
+      - unit-test-binary:
+          name: "Unit tests for Go binaries"
+      - shellcheck/check
+      - integration-test-nodejs-buildpacks:
+          name: "Integration tests with Heroku Node.js buildpacks"
