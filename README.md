@@ -1,6 +1,6 @@
 # Node.js Cloud Native Buildpack
 
-Cloud Native Buildpacks are buildpacks that turn source code into OCI images. They follow a 4-step process (detect, analyze, build, and export) that outputs an image. The spec can be read about in detail [here](https://github.com/buildpack/spec/blob/master/buildpack.md).
+Cloud Native Buildpacks are buildpacks that turn source code into OCI images. They follow a 4-step process (detect, analyze, build, and export) that outputs an image. The spec can be read about in detail [here](https://github.com/buildpack/spec/blob/main/buildpack.md).
 
 ## Usage
 
@@ -108,9 +108,9 @@ set +x
 ## Contributing
 
 1. Open a pull request.
-2. Make update to `CHANGELOG.md` under `master` with a description (PR title is fine) of the change, the PR number and link to PR.
+2. Make update to `CHANGELOG.md` under `main` with a description (PR title is fine) of the change, the PR number and link to PR.
 3. Let the tests run on CI. When tests pass and PR is approved, the branch is ready to be merged.
-4. Merge branch to `master`.
+4. Merge branch to `main`.
 
 ### Release
 
@@ -118,13 +118,13 @@ Note: if you're not a contributor to this project, a contributor will have to ma
 
 1. Create a new branch (ie. `1.14.2-release`).
 2. Update the version in the `buildpack.toml`.
-3. Move the changes from `master` to a new header with the version and date (ie. `1.14.2 (2020-02-30)`) in the `CHANGELOG.md`.
+3. Move the changes from `main` to a new header with the version and date (ie. `1.14.2 (2020-02-30)`) in the `CHANGELOG.md`.
 4. Open a pull request.
 5. Let the tests run on CI. When tests pass and PR is approved, the branch is ready to be merged.
-6. Merge branch to `master` on GitHub.
-7. Pull down `master` to local machine.
-8. Tag the current `master` with the version. (`git tag v1.14.2`)
-9. Push up to GitHub. (`git push origin master --tags`) CI will run the suite and create a new release on successful run.
+6. Merge branch to `main` on GitHub.
+7. Pull down `main` to local machine.
+8. Tag the current `main` with the version. (`git tag v1.14.2`)
+9. Push up to GitHub. (`git push origin main --tags`) CI will run the suite and create a new release on successful run.
 
 ## Glossary
 
