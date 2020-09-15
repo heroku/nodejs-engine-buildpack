@@ -5,7 +5,7 @@ calculate_concurrency() {
   local web_memory=$2
   local concurrency
 
-  concurrency=${WEB_CONCURRENCY-$(($available/$web_memory))}
+  concurrency=${WEB_CONCURRENCY-$((available/web_memory))}
   if (( concurrency < 1 )); then
     concurrency=1
   elif (( concurrency > 200 )); then
@@ -56,9 +56,10 @@ appropriate for your application."
 }
 
 DETECTED=$(detect_memory 512)
-export MEMORY_AVAILABLE=${MEMORY_AVAILABLE-$(bound_memory $DETECTED)}
+export MEMORY_AVAILABLE=${MEMORY_AVAILABLE-$(bound_memory "$DETECTED")}
 export WEB_MEMORY=${WEB_MEMORY-512}
-export WEB_CONCURRENCY=$(calculate_concurrency $MEMORY_AVAILABLE $WEB_MEMORY)
+WEB_CONCURRENCY=$(calculate_concurrency "$MEMORY_AVAILABLE" "$WEB_MEMORY")
+export WEB_CONCURRENCY
 
 warn_bad_web_concurrency
 
