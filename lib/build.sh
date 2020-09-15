@@ -142,6 +142,13 @@ install_or_reuse_yarn() {
   fi
 }
 
+copy_profile() {
+  local layer_dir=$1
+
+  mkdir -p "$layer_dir/profile.d"
+  cp ./profile/WEB_CONCURRENCY.sh "$layer_dir/profile.d/"
+}
+
 write_launch_toml() {
   local build_dir=$1
   local launch_toml=$2

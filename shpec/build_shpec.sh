@@ -139,6 +139,19 @@ describe "lib/build.sh"
     rm_temp_dirs "$layers_dir"
   end
 
+  describe "copy_profile"
+    layers_dir=$(create_temp_layer_dir)
+    it "copies WEB_CONCURRENCY.sh script"
+      assert file_absent "$layers_dir/nodejs/profile.d/WEB_CONCURRENCY.sh"
+
+      copy_profile "$layers_dir/nodejs"
+
+      assert file_present "$layers_dir/nodejs/profile.d/WEB_CONCURRENCY.sh"
+    end
+
+    rm_temp_dirs "$layers_dir"
+  end
+
   describe "write_launch_toml"
     layers_dir=$(create_temp_layer_dir)
 
