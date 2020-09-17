@@ -144,9 +144,10 @@ install_or_reuse_yarn() {
 
 copy_profile() {
   local layer_dir=$1
+  local bp_dir=$2
 
-  mkdir -p "$layer_dir/profile.d"
-  cp ./profile/WEB_CONCURRENCY.sh "$layer_dir/profile.d/"
+  mkdir -p "${layer_dir}/profile.d"
+  cp "$bp_dir/profile/WEB_CONCURRENCY.sh" "$layer_dir/profile.d"
 }
 
 write_launch_toml() {

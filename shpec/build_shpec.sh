@@ -144,7 +144,7 @@ describe "lib/build.sh"
     it "copies WEB_CONCURRENCY.sh script"
       assert file_absent "$layers_dir/nodejs/profile.d/WEB_CONCURRENCY.sh"
 
-      copy_profile "$layers_dir/nodejs"
+      copy_profile "$layers_dir/nodejs" "$bp_dir"
 
       assert file_present "$layers_dir/nodejs/profile.d/WEB_CONCURRENCY.sh"
     end
