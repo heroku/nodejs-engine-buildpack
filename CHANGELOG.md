@@ -4,6 +4,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## main
 - Add profile.d script ([#53](https://github.com/heroku/nodejs-engine-buildpack/pull/53))
+- Set NODE_ENV to production at runtime ([#54](https://github.com/heroku/nodejs-engine-buildpack/pull/54))
 
 ## 0.5.0 (2020-07-16)
 ### Added
