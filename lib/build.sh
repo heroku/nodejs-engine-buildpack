@@ -144,10 +144,11 @@ install_or_reuse_yarn() {
 
 set_node_env() {
   local layer_dir=$1
+  local node_env=${NODE_ENV:-production}
 
   mkdir -p "${layer_dir}/env.launch"
   if [[ ! -s "${layer_dir}/env.launch/NODE_ENV" ]]; then
-    echo "production" >> "${layer_dir}/env.launch/NODE_ENV"
+    echo "$node_env" >> "${layer_dir}/env.launch/NODE_ENV"
   fi
 }
 
