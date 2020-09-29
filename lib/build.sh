@@ -142,6 +142,16 @@ install_or_reuse_yarn() {
   fi
 }
 
+set_node_env() {
+  local layer_dir=$1
+  local node_env=${NODE_ENV:-production}
+
+  mkdir -p "${layer_dir}/env.launch"
+  if [[ ! -s "${layer_dir}/env.launch/NODE_ENV" ]]; then
+    echo "$node_env" >> "${layer_dir}/env.launch/NODE_ENV"
+  fi
+}
+
 copy_profile() {
   local layer_dir=$1
   local bp_dir=$2

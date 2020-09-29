@@ -139,6 +139,33 @@ describe "lib/build.sh"
     rm_temp_dirs "$layers_dir"
   end
 
+  describe "set_node_env"
+    layers_dir=$(create_temp_layer_dir)
+    it "sets env.launch/NODE_ENV to production when NODE_ENV is blank"
+      assert file_absent "$layers_dir/nodejs/env.launch/NODE_ENV"
+
+      set_node_env "$layers_dir/nodejs"
+
+      assert file_present "$layers_dir/nodejs/env.launch/NODE_ENV"
+      assert equal "$(cat "$layers_dir/nodejs/env.launch/NODE_ENV")" production
+
+      rm "$layers_dir/nodejs/env.launch/NODE_ENV"
+    end
+
+    it "sets env.launch/NODE_ENV to NODE_ENV"
+      export NODE_ENV="test"
+
+      set_node_env "$layers_dir/nodejs"
+
+      assert file_present "$layers_dir/nodejs/env.launch/NODE_ENV"
+      assert equal "$(cat "$layers_dir/nodejs/env.launch/NODE_ENV")" test
+
+      unset NODE_ENV
+    end
+
+    rm_temp_dirs "$layers_dir"
+  end
+
   describe "copy_profile"
     layers_dir=$(create_temp_layer_dir)
     it "copies WEB_CONCURRENCY.sh script"

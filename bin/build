@@ -36,6 +36,8 @@ if [[ -f "yarn.lock" ]]; then
 	export PATH=$layers_dir/yarn/bin:$PATH
 fi
 
+set_node_env "$layers_dir/nodejs"
+
 copy_profile "$layers_dir/nodejs" "$bp_dir"
 
 write_launch_toml "$build_dir" "$layers_dir/launch.toml"
