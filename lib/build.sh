@@ -12,6 +12,18 @@ source "$bp_dir/lib/utils/log.sh"
 # shellcheck source=/dev/null
 source "$bp_dir/lib/utils/toml.sh"
 
+set_up_environment() {
+  local layer_dir=$1
+  local node_env=${NODE_ENV:-production}
+
+  mkdir -p "${layer_dir}/env.build"
+
+  if [[ ! -s "${layer_dir}/env.build/NODE_ENV" ]]; then
+    echo "$node_env" >> "${layer_dir}/env.build/NODE_ENV"
+  fi
+  log_info "Setting NODE_ENV to ${node_env}"
+}
+
 install_or_reuse_toolbox() {
   local layer_dir=$1
 

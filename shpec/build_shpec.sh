@@ -55,6 +55,33 @@ describe "lib/build.sh"
     end
   end
 
+  describe "set_up_environment"
+    layers_dir=$(create_temp_layer_dir)
+    it "sets env.build/NODE_ENV to production when NODE_ENV is blank"
+      assert file_absent "$layers_dir/nodejs/env.build/NODE_ENV"
+
+      set_up_environment "$layers_dir/nodejs"
+
+      assert file_present "$layers_dir/nodejs/env.build/NODE_ENV"
+      assert equal "$(cat "$layers_dir/nodejs/env.build/NODE_ENV")" production
+
+      rm "$layers_dir/nodejs/env.build/NODE_ENV"
+    end
+
+    it "sets env.build/NODE_ENV to NODE_ENV"
+      export NODE_ENV="test"
+
+      set_up_environment "$layers_dir/nodejs"
+
+      assert file_present "$layers_dir/nodejs/env.build/NODE_ENV"
+      assert equal "$(cat "$layers_dir/nodejs/env.build/NODE_ENV")" test
+
+      unset NODE_ENV
+    end
+
+    rm_temp_dirs "$layers_dir"
+  end
+
   describe "install_or_reuse_toolbox"
     export PATH=$layers_dir/toolbox/bin:$PATH
 
