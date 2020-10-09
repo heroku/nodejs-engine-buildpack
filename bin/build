@@ -21,6 +21,8 @@ log_info "Node.js Buildpack"
 
 rm -rf node_modules
 
+set_up_environment "$layers_dir/nodejs"
+
 bootstrap_buildpack "$layers_dir/bootstrap"
 
 install_or_reuse_toolbox "$layers_dir/toolbox"
