@@ -88,7 +88,6 @@ describe "lib/build.sh"
     it "creates a toolbox layer"
       install_or_reuse_toolbox "$layers_dir/toolbox"
 
-      assert file_present "$layers_dir/toolbox/bin/jq"
       assert file_present "$layers_dir/toolbox/bin/yj"
     end
 

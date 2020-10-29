@@ -30,12 +30,6 @@ install_or_reuse_toolbox() {
   log_info "Installing toolbox"
   mkdir -p "${layer_dir}/bin"
 
-  if [[ ! -f "${layer_dir}/bin/jq" ]]; then
-    log_info "- jq"
-    curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > "${layer_dir}/bin/jq" \
-      && chmod +x "${layer_dir}/bin/jq"
-  fi
-
   if [[ ! -f "${layer_dir}/bin/yj" ]]; then
     log_info "- yj"
     curl -Ls https://github.com/sclevine/yj/releases/download/v2.0/yj-linux > "${layer_dir}/bin/yj" \
