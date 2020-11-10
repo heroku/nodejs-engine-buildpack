@@ -4,6 +4,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## main
 - Remove jq installation ([#57](https://github.com/heroku/nodejs-engine-buildpack/pull/57))
+- Upgrade Buildpack API version and use CNB_BUILDPACK_DIR env var ([#59](https://github.com/heroku/nodejs-engine-buildpack/pull/59))
 
 ## 0.6.0 (2020-10-13)
 ### Added
