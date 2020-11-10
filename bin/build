@@ -4,8 +4,7 @@ set -o pipefail
 
 layers_dir=$1
 
-# shellcheck disable=SC2128
-bp_dir=$(cd "$(dirname "$0")/.."; pwd)
+bp_dir="$CNB_BUILDPACK_DIR"
 build_dir=$(pwd)
 
 # shellcheck source=/dev/null
