@@ -3,7 +3,7 @@ orbs:
   shellcheck: circleci/shellcheck@1.3.16
   pack: buildpacks/pack@0.2.0
 jobs:
-  ntegration-test-nodejs-buildpacks:
+  integration-test-nodejs-buildpacks:
     parameters:
       stack-number:
         type: "string"
@@ -71,7 +71,4 @@ workflows:
       - shellcheck/check
       - integration-test-nodejs-buildpacks:
           name: "Integration tests for heroku-18 with Heroku Node.js buildpacks"
-          stack-name: "18"
-      - integration-test-nodejs-buildpacks:
-          name: "Integration tests for heroku-20 with Heroku Node.js buildpacks"
-          stack-name: "20"
+          stack-number: "18"
