@@ -3,8 +3,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## main
-- Remove jq installation ([#57](https://github.com/heroku/nodejs-engine-buildpack/pull/57))
+
+## 0.7.0 (2020-11-11)
+### Added
 - Add support for heroku-20 ([#60](https://github.com/heroku/nodejs-engine-buildpack/pull/60))
+
+### Fixed
+- Remove jq installation ([#57](https://github.com/heroku/nodejs-engine-buildpack/pull/57))
 - Make `NODE_ENV` variables overrides ([#61](https://github.com/heroku/nodejs-engine-buildpack/pull/61))
 
 ## 0.6.0 (2020-10-13)
