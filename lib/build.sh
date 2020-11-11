@@ -18,8 +18,8 @@ set_up_environment() {
 
   mkdir -p "${layer_dir}/env.build"
 
-  if [[ ! -s "${layer_dir}/env.build/NODE_ENV" ]]; then
-    echo -e "$node_env\c" >> "${layer_dir}/env.build/NODE_ENV"
+  if [[ ! -s "${layer_dir}/env.build/NODE_ENV.override" ]]; then
+    echo -e "$node_env\c" >> "${layer_dir}/env.build/NODE_ENV.override"
   fi
   log_info "Setting NODE_ENV to ${node_env}"
 }
@@ -153,8 +153,8 @@ set_node_env() {
   local node_env=${NODE_ENV:-production}
 
   mkdir -p "${layer_dir}/env.launch"
-  if [[ ! -s "${layer_dir}/env.launch/NODE_ENV" ]]; then
-    echo -e "$node_env\c" >> "${layer_dir}/env.launch/NODE_ENV"
+  if [[ ! -s "${layer_dir}/env.launch/NODE_ENV.override" ]]; then
+    echo -e "$node_env\c" >> "${layer_dir}/env.launch/NODE_ENV.override"
   fi
 }
 
