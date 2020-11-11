@@ -1,4 +1,4 @@
-module github.com/heroku/node-js-cnb
+module github.com/heroku/nodejs-engine-buildpack
 
 go 1.14
 

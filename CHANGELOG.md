@@ -4,6 +4,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## main
 - Remove jq installation ([#57](https://github.com/heroku/nodejs-engine-buildpack/pull/57))
+- Add support for heroku-20 ([#60](https://github.com/heroku/nodejs-engine-buildpack/pull/60))
 - Make `NODE_ENV` variables overrides ([#61](https://github.com/heroku/nodejs-engine-buildpack/pull/61))
 
 ## 0.6.0 (2020-10-13)
