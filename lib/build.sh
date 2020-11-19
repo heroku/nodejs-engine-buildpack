@@ -21,17 +21,17 @@ set_up_environment() {
   if [[ ! -s "${layer_dir}/env.build/NODE_ENV.override" ]]; then
     echo -e "$node_env\c" >> "${layer_dir}/env.build/NODE_ENV.override"
   fi
-  log_info "Setting NODE_ENV to ${node_env}"
+  info "Setting NODE_ENV to ${node_env}"
 }
 
 install_or_reuse_toolbox() {
   local layer_dir=$1
 
-  log_info "Installing toolbox"
+  info "Installing toolbox"
   mkdir -p "${layer_dir}/bin"
 
   if [[ ! -f "${layer_dir}/bin/yj" ]]; then
-    log_info "- yj"
+    info "- yj"
     curl -Ls https://github.com/sclevine/yj/releases/download/v2.0/yj-linux > "${layer_dir}/bin/yj" \
       && chmod +x "${layer_dir}/bin/yj"
   fi
@@ -49,20 +49,20 @@ install_or_reuse_node() {
   local node_version
   local resolved_data
   local node_url
-
-  log_info "Getting Node version"
+  status "Installing Node"
+  info "Getting Node version"
   engine_node=$(json_get_key "$build_dir/package.json" ".engines.node")
   node_version=${engine_node:-12.x}
 
-  log_info "Resolving Node version"
+  info "Resolving Node version"
   resolved_data=$(resolve-version node "$node_version")
   node_url=$(echo "$resolved_data" | cut -f2 -d " ")
   node_version=$(echo "$resolved_data" | cut -f1 -d " ")
 
   if [[ $node_version == $(toml_get_key_from_metadata "${layer_dir}.toml" "version") ]]; then
-    log_info "Reusing Node v${node_version}"
+    info "Reusing Node v${node_version}"
   else
-    log_info "Downloading and extracting Node v${node_version}"
+    info "Downloading and extracting Node v${node_version}"
 
     mkdir -p "${layer_dir}"
     rm -rf "${layer_dir:?}"/*
@@ -89,8 +89,8 @@ parse_package_json_engines() {
   local yarn_version
   local resolved_data
   local yarn_url
-
-  log_info "Parsing package.json"
+  status "Parsing package.json"
+  info "Parsing package.json"
 
   engine_npm=$(json_get_key "$build_dir/package.json" ".engines.npm")
   engine_yarn=$(json_get_key "$build_dir/package.json" ".engines.yarn")
@@ -127,11 +127,11 @@ install_or_reuse_yarn() {
   resolved_data=$(resolve-version yarn "$yarn_version")
   yarn_url=$(echo "$resolved_data" | cut -f2 -d " ")
   yarn_version=$(echo "$resolved_data" | cut -f1 -d " ")
-
+  status "Installing yarn"
   if [[ $yarn_version == $(toml_get_key_from_metadata "${layer_dir}.toml" "yarn_version") ]]; then
-    log_info "Reusing yarn@${yarn_version}"
+    info "Reusing yarn@${yarn_version}"
   else
-    log_info "Installing yarn@${yarn_version}"
+    info "Installing yarn@${yarn_version}"
 
     mkdir -p "$layer_dir"
     rm -rf "${layer_dir:?}"/*
@@ -181,8 +181,8 @@ write_launch_toml() {
   fi
 
   if [[ ! "$command" ]]; then
-    log_info "No file to start server"
-    log_info "either use 'docker run' to start container or add index.js or server.js"
+    info "No file to start server"
+    info "either use 'docker run' to start container or add index.js or server.js"
   else
     cat <<TOML > "$launch_toml"
 [[processes]]

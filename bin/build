@@ -16,7 +16,7 @@ source "$bp_dir/lib/bootstrap.sh"
 # shellcheck source=/dev/null
 source "$bp_dir/lib/build.sh"
 
-log_info "Node.js Buildpack"
+info "Node.js Buildpack"
 
 rm -rf node_modules
 

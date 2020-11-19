@@ -43,9 +43,9 @@ bootstrap_buildpack() {
     export PATH=$bp_dir/bin:$PATH
   else
     if [[ -f "$layer_dir/bin/resolve-version" ]]; then
-      log_info "Using previously bootstrapped binaries"
+      info "Using previously bootstrapped binaries"
     else
-      log_info "Bootstrapping buildpack"
+      info "Bootstrapping buildpack"
 
       go_dir="$(mktemp -d)"
       install_go "$go_dir"

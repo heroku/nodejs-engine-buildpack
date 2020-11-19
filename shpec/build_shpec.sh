@@ -38,7 +38,7 @@ rm_binaries() {
 }
 
 describe "lib/build.sh"
-  stub_command "log_info"
+  stub_command "info"
   rm_binaries
 
   layers_dir=$(create_temp_layer_dir)
@@ -248,6 +248,6 @@ describe "lib/build.sh"
     rm_temp_dirs "$layers_dir"
   end
 
-  unstub_command "log_info"
+  unstub_command "info"
   rm_binaries
 end
