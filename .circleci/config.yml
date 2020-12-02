@@ -28,7 +28,10 @@ jobs:
               --path ./typescript-getting-started
       - run:
           name: "Test image"
-          command: docker run circle-build-1 "node -v"
+          command: |
+            if [[ $(docker run --entrypoint "/bin/bash" circle-build-1 -c "ls /cnb/process | grep web") != "web" ]]; then { echo "Must have web process created"; exit 1; }; fi
+            if [[ $(docker run --entrypoint "/bin/bash" circle-build-1 -c "ls /layers/heroku_nodejs-engine/nodejs/bin | grep node") != "node" ]]; then { echo "Must have node binary installed"; exit 1; }; fi
+            if [[ $(docker run --entrypoint "/bin/bash" circle-build-1 -c "ls /layers/heroku_nodejs-engine/nodejs/bin | grep npm") != "npm" ]]; then { echo "Must have npm binary installed"; exit 1; }; fi
   unit-test-heroku-stack:
     parameters:
       stack:
