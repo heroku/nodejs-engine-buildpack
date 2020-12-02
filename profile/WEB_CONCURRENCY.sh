@@ -45,13 +45,12 @@ bound_memory() {
 warn_bad_web_concurrency() {
   local concurrency=$((MEMORY_AVAILABLE/WEB_MEMORY))
   if [ "$concurrency" -gt "200" ]; then
-    echo "Could not determine a reasonable value for WEB_CONCURRENCY.
+    warning "Could not determine a reasonable value for WEB_CONCURRENCY.
 This is likely due to running the Heroku NodeJS buildpack on a non-Heroku
 platform.
 
 WEB_CONCURRENCY has been set to 1. Please review whether this value is
 appropriate for your application."
-    echo ""
   fi
 }
 
