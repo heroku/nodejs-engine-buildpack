@@ -1,50 +1,56 @@
-name: Release Buildpack Image
-on:
-  release:
-    types:
-      - published
 jobs:
   create-package:
-    name: Package, Publish, and Register
+    name: "Package, Publish, and Register"
     runs-on:
       - ubuntu-latest
     steps:
-      - id: checkout
-          name: Checkout code
-          uses: actions/checkout@v2
-      - id: setup-pack
-          name: Install Pack
-          uses: buildpacks/github-actions/setup-pack@v4.0.0
-      - if: ${{ github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork }}
-          name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: us-east-2
-      - name: Login to Amazon ECR
-          id: login-ecr
-          uses: aws-actions/amazon-ecr-login@v1
-      - id: package
-          name: Create and Publish Buildpackage
-          run: |
+      -
+        id: checkout
+        name: "Checkout code"
+        uses: actions/checkout@v2
+      -
+        id: setup-pack
+        name: "Install Pack"
+        uses: buildpacks/github-actions/setup-pack@v4.0.0
+      -
+        if: "${{ github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork }}"
+        name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+          aws-region: us-east-2
+          aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+      -
+        id: login-ecr
+        name: "Login to Amazon ECR"
+        uses: aws-actions/amazon-ecr-login@v1
+      -
+        env:
+          PACKAGE: public.ecr.aws/r2f9u0w4/heroku-nodejs-engine-buildpack
+        id: package
+        name: "Create and Publish Buildpackage"
+        run: |
             #!/usr/bin/env bash
             set -euo pipefail
-
+            
             VERSION="$(cat buildpack.toml | yj -t | jq -r .buildpack.version)"
             pack package-buildpack --publish ${PACKAGE}:${VERSION}
             DIGEST="$(crane digest ${PACKAGE}:${VERSION})"
-
+            
             echo "::set-output name=version::$VERSION"
             echo "::set-output name=address::${PACKAGE}@${DIGEST}"
-          shell: bash
-          env:
-            PACKAGE: public.ecr.aws/r2f9u0w4/heroku-nodejs-engine-buildpack
-      - id: register
-          name: Register Buildpack
-          uses: docker://public.ecr.aws/r2f9u0w4/heroku-nodejs-engine-buildpack:latest
-          with:
-            token:   ${{ secrets.PUBLIC_REPO_TOKEN }}
-            id:      heroku/procfile
-            version: ${{ steps.package.outputs.version }}
-            address: ${{ steps.package.outputs.address }}
+        shell: bash
+      -
+        id: register
+        name: "Register Buildpack"
+        uses: "docker://public.ecr.aws/r2f9u0w4/heroku-nodejs-engine-buildpack:latest"
+        with:
+          address: "${{ steps.package.outputs.address }}"
+          id: heroku/procfile
+          token: "${{ secrets.PUBLIC_REPO_TOKEN }}"
+          version: "${{ steps.package.outputs.version }}"
+name: "Release Buildpack Image"
+true:
+  release:
+    types:
+      - published
