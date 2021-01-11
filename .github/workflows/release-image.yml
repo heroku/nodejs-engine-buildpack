@@ -1,8 +1,8 @@
 name: "Release Buildpack Image"
-on:
-  release:
-    types:
-      - published
+# on:
+#   release:
+#     types:
+#       - published
 jobs:
   create-package:
     name: "Package, Publish, and Register"
